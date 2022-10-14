@@ -1,0 +1,16 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "description": "solves advent of code algorithms",
+  "main": "index.js",
+  "author": "Johnathan Osorno <jnosornov@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "mocha \"./**/*.test.js\""
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  },
+  "dependencies": {}
+}
