@@ -3,7 +3,6 @@ const logger = require('../../utils/logger.js')
 
 // time complexity: O(n)
 // space complexity: O(1)
-
 function findSantasFloor(santaInstructions) {
   if (!santaInstructions) {
     logger.log('missing Santa instructions')
@@ -35,6 +34,8 @@ function findSantasFloor(santaInstructions) {
   return floor
 }
 
+// time complexity: O(n)
+// space complexity: O(1)
 function findSantasBasementInstruction(santaInstructions) {
   if (!santaInstructions) {
     logger.log('missing Santa instructions')
