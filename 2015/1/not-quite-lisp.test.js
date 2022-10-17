@@ -1,5 +1,5 @@
 const assert = require('assert')
-const { findSantasFloor } = require('./solution.js')
+const { findSantasFloor, findSantasBasementInstruction } = require('./solution.js')
 
 describe('NOT QUITE LISP', () => {
   it('Santa should deliver presents to the third floor (3rd floor)', () => {
@@ -39,5 +39,29 @@ describe('NOT QUITE LISP', () => {
     const expectedFloor = undefined
     const algorithmOutput = findSantasFloor(santaInstructions)
     assert.equal(algorithmOutput, expectedFloor)
+  })
+
+  it('Santa enters basemenet at instruction one (1)', () => {
+    const santaInstructions = ')'
+
+    const expectedPosition = 1
+    const algorithmOutput = findSantasBasementInstruction(santaInstructions)
+    assert.equal(algorithmOutput, expectedPosition)
+  })
+
+  it('Santa enters basemenet at instruction five (5)', () => {
+    const santaInstructions = '()())'
+
+    const expectedPosition = 5
+    const algorithmOutput = findSantasBasementInstruction(santaInstructions)
+    assert.equal(algorithmOutput, expectedPosition)
+  })
+
+  it('Santa does not enter basemenet ever', () => {
+    const santaInstructions = '()()'
+
+    const expectedPosition = undefined
+    const algorithmOutput = findSantasBasementInstruction(santaInstructions)
+    assert.equal(algorithmOutput, expectedPosition)
   })
 })

@@ -6,8 +6,8 @@
   "author": "Johnathan Osorno <jnosornov@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "solve": "node ./2015/1/solution.js",
-    "test": "NODE_ENV=test mocha ./**/*.test.js"
+    "solve": "node ./**/**/solution.js",
+    "test": "NODE_ENV=test mocha ./**/**/*.test.js"
   },
   "devDependencies": {
     "mocha": "^10.0.0"
