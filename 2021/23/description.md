@@ -20,7 +20,7 @@ For example:
 ´´´
 
 The amphipods would like a method to organize every amphipode into side rooms so that each side room
-contains one type of amphipod and the types are sorted `A`-`D` goign left to right, like this:
+contains one type of amphipod and the types are sorted `A`-`D` going left to right, like this:
 
 ```
 #############
