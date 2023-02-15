@@ -1,0 +1,11 @@
+{
+  "name": "advent-of-code",
+  "version": "1.0.0",
+  "description": "project to solve advent of code algorithm challenges",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node hill-climbing-algorithm.js"
+  },
+  "author": "Johnathan Osorno Valencia",
+  "license": "ISC"
+}
