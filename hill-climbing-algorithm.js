@@ -2,6 +2,106 @@
 const fs = require("fs/promises");
 const path = require("path");
 
+const a_star = {
+  init: function(grid) {
+    for (let x = 0; grid.length; x++) {
+      for (let y = 0; grid[x].length; y++) {
+        const node = grid[x][y];
+        node.f = null;
+        node.g = null;
+        node.h = null;
+        node.cost = 1;
+        node.visited = false;
+        node.closed = false;
+        node.parent = null;
+      }
+    }
+  },
+  search: function({ grid, start, end }) {
+    a_star.init(grid);
+
+    const open_list = [];
+    const closed_list = [];
+    open_list.push(start);
+
+    while (open_list.length > 0) {
+      open_list.sort((a, b) => a - b);
+      const current_node = open_list.shift();
+
+      if (current_node == end) {
+        
+      }
+
+
+    }
+  },
+  heuristic: function (start, end) {
+    const dx = Math.abs(start.x - end.x);
+    const dy = Math.abs(start.y - end.y);
+
+    return dx + dy;
+  },
+  neighbors: function({ grid, node, diagonals_allowed }) {
+    let neighbor_nodes;
+    const { x, y } = node;
+
+    // west
+    if (grid[x - 1] && grid[x - 1][y]) {
+      neighbor_nodes.push[grid[x - 1][y]]
+    }
+
+    // east
+    if (grid[x + 1] && grid[x + 1][y]) {
+      neighbor_nodes.push[grid[x + 1][y]]
+    }
+
+    // south
+    if (grid[x] && grid[x][y - 1]) {
+      neighbor_nodes.push[grid[x][y - 1]]
+    }
+
+    // north
+    if (grid[x] && grid[x][y + 1]) {
+      neighbor_nodes.push[grid[x][y + 1]]
+    }
+
+    if (diagonals_allowed) {
+      // southwest
+      if (grid[x - 1] && grid[x - 1][y - 1]) {
+        neighbor_nodes.push[grid[x - 1][y - 1]]
+      }
+
+      // southeast
+      if (grid[x + 1] && grid[x + 1][y - 1]) {
+        neighbor_nodes.push[grid[x + 1][y - 1]]
+      }
+
+      // northwest
+      if (grid[x - 1] && grid[x - 1][y + 1]) {
+        neighbor_nodes.push[grid[x - 1][y + 1]]
+      }
+
+      // northeast
+      if (grid[x + 1] && grid[x + 1][y + 1]) {
+        neighbor_nodes.push[grid[x + 1][y + 1]]
+      }
+    }
+
+    return neighbor_nodes.filter((neighbor) => a_star.isWall({ grid, node, neighbor }));
+  },
+  isWall: function ({ grid, node, neighbor }) {
+    const MAX_ELEVATION_GAP = 1;
+
+    const node_height_ascii = grid[node.x][node.y].charCodeAt(0);
+    const neighbor_height_ascii = grid[neighbor.x][neighbor.y].charCodeAt(0);
+
+    return (Math.abs(node_height_ascii - neighbor_height_ascii)) > MAX_ELEVATION_GAP;
+  }
+}
+
+
+/*
+
 // define heuristic funtion - Manhattan distance
 function heuristic({ state, goal }) {
   const dx = Math.abs(state.x - goal.x);
@@ -154,9 +254,11 @@ async function init() {
     const { start, goal, grid } = setHeighmap(puzzleInput);
     const shortestPathToGoal = aStar(start, goal, grid);
     console.log(shortestPathToGoal);
+    console.log(shortestPathToGoal.length)
   } catch(error) {
     console.log(error);
   }
 }
 
 init();
+*/
