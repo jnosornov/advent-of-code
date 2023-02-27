@@ -2,7 +2,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const a_star = {
+const aStar = {
   init: function(grid) {
     for (let x = 0; grid.length; x++) {
       for (let y = 0; grid[x].length; y++) {
@@ -11,29 +11,69 @@ const a_star = {
         node.g = null;
         node.h = null;
         node.cost = 1;
+        node.height = node;
         node.visited = false;
         node.closed = false;
+        node.isWall = false;
         node.parent = null;
       }
     }
   },
-  search: function({ grid, start, end }) {
-    a_star.init(grid);
+  search: function({ grid, start, goal }) {
+    aStar.init(grid);
 
-    const open_list = [];
-    const closed_list = [];
-    open_list.push(start);
+    const openHeap = aStar.heap();
+    openHeap.push(start);
 
-    while (open_list.length > 0) {
-      open_list.sort((a, b) => a - b);
-      const current_node = open_list.shift();
+    while (openHeap.size() > 0) {
+      // find lowest f in open list.
+      const node = openHeap.pop();
 
-      if (current_node == end) {
-        
+      // result has been found, return the traced path.
+      if (node === goal) {
+        const curr = node;
+        const path = [];
+
+        while (curr.parent) {
+          path.push(curr);
+          curr = curr.parent();
+        }
+
+        return path.reverse();
       }
 
+      // push node to closed list, remove from open list.
+      node.closed = true;
+      const neighbors = aStar.neighbors({ grid, node });
 
+      for (let i = 0; i <= neighbors.length; i++) {
+        const neighbor = neighbors[i];
+
+        if (neighbor.closed || neighbor.isWall) {
+          continue;
+        }
+
+        const gScore = node.g + neighbor.cost;
+        const beenVisited = neighbor.visited;
+
+        if (!beenVisited || gScore < neighbor.g) {
+          neighbor.visited = true;
+          neighbor.parent = node;
+          neighbor.h = neighbor.h || aStar.heuristic(start, goal);
+          neighbor.g = gScore;
+          neighbor.f = neighbor.g + neighbor.h;
+
+          if (!beenVisited) {
+            openHeap.push(neighbor);
+          } else {
+            openHeap.rescoreElement(neighbor);
+          }
+        }
+      }
     }
+
+    // failure to find path
+    return [];
   },
   heuristic: function (start, end) {
     const dx = Math.abs(start.x - end.x);
@@ -41,64 +81,101 @@ const a_star = {
 
     return dx + dy;
   },
-  neighbors: function({ grid, node, diagonals_allowed }) {
-    let neighbor_nodes;
+  neighbors: function({ grid, node, diagonals_allowed = false }) {
+    let neighborNodes;
     const { x, y } = node;
 
     // west
     if (grid[x - 1] && grid[x - 1][y]) {
-      neighbor_nodes.push[grid[x - 1][y]]
+      neighborNodes.push[grid[x - 1][y]]
     }
 
     // east
     if (grid[x + 1] && grid[x + 1][y]) {
-      neighbor_nodes.push[grid[x + 1][y]]
+      neighborNodes.push[grid[x + 1][y]]
     }
 
     // south
     if (grid[x] && grid[x][y - 1]) {
-      neighbor_nodes.push[grid[x][y - 1]]
+      neighborNodes.push[grid[x][y - 1]]
     }
 
     // north
     if (grid[x] && grid[x][y + 1]) {
-      neighbor_nodes.push[grid[x][y + 1]]
+      neighborNodes.push[grid[x][y + 1]]
     }
 
     if (diagonals_allowed) {
       // southwest
       if (grid[x - 1] && grid[x - 1][y - 1]) {
-        neighbor_nodes.push[grid[x - 1][y - 1]]
+        neighborNodes.push[grid[x - 1][y - 1]]
       }
 
       // southeast
       if (grid[x + 1] && grid[x + 1][y - 1]) {
-        neighbor_nodes.push[grid[x + 1][y - 1]]
+        neighborNodes.push[grid[x + 1][y - 1]]
       }
 
       // northwest
       if (grid[x - 1] && grid[x - 1][y + 1]) {
-        neighbor_nodes.push[grid[x - 1][y + 1]]
+        neighborNodes.push[grid[x - 1][y + 1]]
       }
 
       // northeast
       if (grid[x + 1] && grid[x + 1][y + 1]) {
-        neighbor_nodes.push[grid[x + 1][y + 1]]
+        neighborNodes.push[grid[x + 1][y + 1]]
       }
     }
 
-    return neighbor_nodes.filter((neighbor) => a_star.isWall({ grid, node, neighbor }));
+    neighborNodes.forEach((neighbor) => {
+      const MAX_ELEVATION_GAP = 1;
+
+      const nodeHeight = node.height.charCodeAt(0);
+      const neighborHeight = neighbor.height.charCodeAt(0);
+      const isWall = (Math.abs(nodeHeight - neighborHeight)) > MAX_ELEVATION_GAP;
+  
+      if (!isWall) return;
+      neighbor.height = true;
+    });
+
+    return neighborNodes;
   },
-  isWall: function ({ grid, node, neighbor }) {
-    const MAX_ELEVATION_GAP = 1;
-
-    const node_height_ascii = grid[node.x][node.y].charCodeAt(0);
-    const neighbor_height_ascii = grid[neighbor.x][neighbor.y].charCodeAt(0);
-
-    return (Math.abs(node_height_ascii - neighbor_height_ascii)) > MAX_ELEVATION_GAP;
+  heap: function() {
+    return new PriorityQueue();
   }
 }
 
+class PriorityQueue {
+  constructor() {
+    this.items = [];
+  }
+
+  push(item) {
+    this.items.push(item);
+    this.bubbleUp();
+  }
+
+  bubbleUp() {
+    let idx = this.items.length - 1;
+    const element = this.values[idx];
+
+    while(idx > 0) {
+      let parentIdx = Math.floor((idx - 1)/ 2);
+      let parent = this.values[parentIdx];
+
+      if (element.f <= parent.f) break;
+
+      this.values[parentIdx] = element;
+      this.values[idx] = parent;
+
+      idx = parentIdx;
+    }
+  }
+
+  pop() {
+    
+  }
+};
 
 /*
 
