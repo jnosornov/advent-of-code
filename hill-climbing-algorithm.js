@@ -4,8 +4,8 @@ const path = require("path");
 
 const aStar = {
   init: function(grid) {
-    for (let x = 0; grid.length; x++) {
-      for (let y = 0; grid[x].length; y++) {
+    for (let x = 0; x < grid.length; x++) {
+      for (let y = 0; y < grid[x].length; y++) {
         const node = grid[x][y];
         console.log(node);
         node.f = null;
@@ -159,16 +159,16 @@ class PriorityQueue {
 
   bubbleUp() {
     let idx = this.items.length - 1;
-    const element = this.values[idx];
+    const element = this.items[idx];
 
     while(idx > 0) {
       let parentIdx = Math.floor((idx - 1)/ 2);
-      let parent = this.values[parentIdx];
+      let parent = this.items[parentIdx];
 
       if (element.f <= parent.f) break;
 
-      this.values[parentIdx] = element;
-      this.values[idx] = parent;
+      this.items[parentIdx] = element;
+      this.items[idx] = parent;
 
       idx = parentIdx;
     }
@@ -176,10 +176,10 @@ class PriorityQueue {
 
   pop() {
     const max = this.items[0];
-    const end = this.values.pop();
+    const end = this.items.pop();
 
-    if (this.values.length > 0) {
-      this.values[0] = end;
+    if (this.items.length > 0) {
+      this.items[0] = end;
       this.sinkDown();
     }
 
@@ -188,8 +188,8 @@ class PriorityQueue {
 
   sinkDown() {
     let idx = 0
-    const length = this.values.length
-    const element = this.values[0]
+    const length = this.items.length
+    const element = this.items[0]
     while (true) {
       let leftChildIdx = 2 * idx + 1
       let rightChildIdx = 2 * idx + 2
@@ -197,13 +197,13 @@ class PriorityQueue {
       let swap = null
   
       if (leftChildIdx < length) {
-        leftChild = this.values[leftChildIdx]
+        leftChild = this.items[leftChildIdx]
         if (leftChild > element) {
           swap = leftChildIdx
         }
       }
       if (rightChildIdx < length) {
-        rightChild = this.values[rightChildIdx]
+        rightChild = this.items[rightChildIdx]
         if (
           swap === null && rightChild > element ||
           swap !== null && rightChild > leftChild
@@ -213,8 +213,8 @@ class PriorityQueue {
       }
   
       if (swap === null) break;
-      this.values[idx] = this.values[swap]
-      this.values[swap] = element
+      this.items[idx] = this.items[swap]
+      this.items[swap] = element
       idx = swap
     }
   }
@@ -259,6 +259,7 @@ async function init() {
     const puzzleInput = data.split("\n");
 
     const { start, goal, grid } = setHeighmap(puzzleInput);
+    console.log(grid);
     const shortestPathToGoal = aStar.search({ grid, start, goal });
     console.log(shortestPathToGoal);
     console.log(shortestPathToGoal.length)
