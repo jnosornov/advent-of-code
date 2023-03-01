@@ -7,12 +7,10 @@ const aStar = {
     for (let x = 0; x < grid.length; x++) {
       for (let y = 0; y < grid[x].length; y++) {
         const node = grid[x][y];
-        console.log(node);
         node.f = null;
         node.g = null;
         node.h = null;
         node.cost = 1;
-        node.height = node;
         node.visited = false;
         node.closed = false;
         node.isWall = false;
@@ -32,7 +30,8 @@ const aStar = {
       const node = openHeap.pop();
 
       // result has been found, return the traced path.
-      if (node === goal) {
+      if (node.x == goal.x && node.y == goal.y) {
+        console.log("found path");
         const curr = node;
         const path = [];
 
@@ -48,14 +47,14 @@ const aStar = {
       node.closed = true;
       const neighbors = aStar.neighbors({ grid, node });
 
-      for (let i = 0; i <= neighbors.length; i++) {
+      for (let i = 0; i <= neighbors.length - 1; i++) {
         const neighbor = neighbors[i];
 
         if (neighbor.closed || neighbor.isWall) {
           continue;
         }
 
-        const gScore = node.g + neighbor.cost;
+        const gScore = node.g || 0 + neighbor.cost;
         const beenVisited = neighbor.visited;
 
         if (!beenVisited || gScore < neighbor.g) {
@@ -84,48 +83,48 @@ const aStar = {
     return dx + dy;
   },
   neighbors: function({ grid, node, diagonals_allowed = false }) {
-    let neighborNodes;
+    let neighborNodes = [];
     const { x, y } = node;
 
     // west
     if (grid[x - 1] && grid[x - 1][y]) {
-      neighborNodes.push[grid[x - 1][y]]
+      neighborNodes.push(grid[x - 1][y]);
     }
 
     // east
     if (grid[x + 1] && grid[x + 1][y]) {
-      neighborNodes.push[grid[x + 1][y]]
+      neighborNodes.push(grid[x + 1][y]);
     }
 
     // south
     if (grid[x] && grid[x][y - 1]) {
-      neighborNodes.push[grid[x][y - 1]]
+      neighborNodes.push(grid[x][y - 1]);
     }
 
     // north
     if (grid[x] && grid[x][y + 1]) {
-      neighborNodes.push[grid[x][y + 1]]
+      neighborNodes.push(grid[x][y + 1]);
     }
 
     if (diagonals_allowed) {
       // southwest
       if (grid[x - 1] && grid[x - 1][y - 1]) {
-        neighborNodes.push[grid[x - 1][y - 1]]
+        neighborNodes.push(grid[x - 1][y - 1]);
       }
 
       // southeast
       if (grid[x + 1] && grid[x + 1][y - 1]) {
-        neighborNodes.push[grid[x + 1][y - 1]]
+        neighborNodes.push(grid[x + 1][y - 1]);
       }
 
       // northwest
       if (grid[x - 1] && grid[x - 1][y + 1]) {
-        neighborNodes.push[grid[x - 1][y + 1]]
+        neighborNodes.push(grid[x - 1][y + 1]);
       }
 
       // northeast
       if (grid[x + 1] && grid[x + 1][y + 1]) {
-        neighborNodes.push[grid[x + 1][y + 1]]
+        neighborNodes.push(grid[x + 1][y + 1]);
       }
     }
 
@@ -137,7 +136,7 @@ const aStar = {
       const isWall = (Math.abs(nodeHeight - neighborHeight)) > MAX_ELEVATION_GAP;
   
       if (!isWall) return;
-      neighbor.height = true;
+      neighbor.isWall = true;
     });
 
     return neighborNodes;
@@ -187,36 +186,40 @@ class PriorityQueue {
   }
 
   sinkDown() {
-    let idx = 0
-    const length = this.items.length
-    const element = this.items[0]
+    let idx = 0;
+    const length = this.items.length;
+    const element = this.items[0];
     while (true) {
-      let leftChildIdx = 2 * idx + 1
-      let rightChildIdx = 2 * idx + 2
-      let leftChild, rightChild
-      let swap = null
+      let leftChildIdx = 2 * idx + 1;
+      let rightChildIdx = 2 * idx + 2;
+      let leftChild, rightChild;
+      let swap = null;
   
       if (leftChildIdx < length) {
-        leftChild = this.items[leftChildIdx]
+        leftChild = this.items[leftChildIdx];
         if (leftChild > element) {
-          swap = leftChildIdx
+          swap = leftChildIdx;
         }
       }
       if (rightChildIdx < length) {
-        rightChild = this.items[rightChildIdx]
+        rightChild = this.items[rightChildIdx];
         if (
           swap === null && rightChild > element ||
           swap !== null && rightChild > leftChild
         ) {
-          swap = rightChildIdx
+          swap = rightChildIdx;
         }
       }
   
       if (swap === null) break;
-      this.items[idx] = this.items[swap]
-      this.items[swap] = element
-      idx = swap
+      this.items[idx] = this.items[swap];
+      this.items[swap] = element;
+      idx = swap;
     }
+  }
+
+  size() {
+    return this.items.length;
   }
 };
 
@@ -236,14 +239,14 @@ function setHeighmap(puzzleInput) {
       }
 
       const gridPoint = puzzleInput[row][col];
-      grid[col].push(gridPoint);
+      grid[col].push({ x: parseInt(col), y: row, height: gridPoint });
 
       if (gridPoint == START_POSITION_ID) {
-        start = { x: parseInt(col), y: row }
+        start = { x: parseInt(col), y: row, height: 'a' };
       }
 
       if (gridPoint == GOAL_POSITION_ID) {
-        goal = { x: parseInt(col) , y: row }
+        goal = { x: parseInt(col) , y: row, height: 'z' };
       }
     }
   }
@@ -259,7 +262,6 @@ async function init() {
     const puzzleInput = data.split("\n");
 
     const { start, goal, grid } = setHeighmap(puzzleInput);
-    console.log(grid);
     const shortestPathToGoal = aStar.search({ grid, start, goal });
     console.log(shortestPathToGoal);
     console.log(shortestPathToGoal.length)
