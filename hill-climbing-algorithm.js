@@ -31,7 +31,6 @@ const aStar = {
 
       // result has been found, return the traced path.
       if (node.x == goal.x && node.y == goal.y) {
-        console.log("found path");
         const curr = node;
         const path = [];
 
@@ -46,7 +45,10 @@ const aStar = {
       // push node to closed list, remove from open list.
       node.closed = true;
       const neighbors = aStar.neighbors({ grid, node });
+      console.log("NEIGHBOR NODES");
+      console.log(neighbors);
 
+ 
       for (let i = 0; i <= neighbors.length - 1; i++) {
         const neighbor = neighbors[i];
 
@@ -54,15 +56,23 @@ const aStar = {
           continue;
         }
 
+        console.log("-------------------------------------");
+        console.log("node gScore", node.g);
+        console.log("neighbor gScore", neighbor.cost);
         const gScore = node.g || 0 + neighbor.cost;
         const beenVisited = neighbor.visited;
 
         if (!beenVisited || gScore < neighbor.g) {
+          console.log("has not been visited", !beenVisited);
+          console.log("is node g score less than neighbors", gScore < neighbor.g);
+          console.log("g score", gScore);
           neighbor.visited = true;
           neighbor.parent = node;
           neighbor.h = neighbor.h || aStar.heuristic(start, goal);
           neighbor.g = gScore;
           neighbor.f = neighbor.g + neighbor.h;
+
+          console.log("F:" + neighbor.f, "G:" + neighbor.g, "H:" + neighbor.h);
 
           if (!beenVisited) {
             openHeap.push(neighbor);
@@ -71,6 +81,8 @@ const aStar = {
           }
         }
       }
+      console.log("-------------------------------------");
+      console.log("\r")
     }
 
     // failure to find path
@@ -263,8 +275,9 @@ async function init() {
 
     const { start, goal, grid } = setHeighmap(puzzleInput);
     const shortestPathToGoal = aStar.search({ grid, start, goal });
-    console.log(shortestPathToGoal);
-    console.log(shortestPathToGoal.length)
+    // console.log(goal);
+    // console.log(shortestPathToGoal);
+    // console.log(shortestPathToGoal.length)
   } catch(error) {
     console.log(error);
   }
