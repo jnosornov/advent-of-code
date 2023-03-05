@@ -4,7 +4,8 @@
   "description": "project to solve advent of code algorithm challenges",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon hill-climbing-algorithm.js"
+    "dev": "nodemon hill-climbing-algorithm.js",
+    "debug": "nodemon inspect hill-climbing-algorithm.js"
   },
   "author": "Johnathan Osorno Valencia",
   "license": "ISC",

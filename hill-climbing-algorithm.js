@@ -1,4 +1,3 @@
-// read puzzle input
 const fs = require("fs/promises");
 const path = require("path");
 
@@ -7,6 +6,7 @@ const aStar = {
     for (let x = 0; x < grid.length; x++) {
       for (let y = 0; y < grid[x].length; y++) {
         const node = grid[x][y];
+
         node.f = null;
         node.g = null;
         node.h = null;
@@ -28,15 +28,16 @@ const aStar = {
     while (openHeap.size() > 0) {
       // find lowest f in open list.
       const node = openHeap.pop();
+      debugger;
 
       // result has been found, return the traced path.
       if (node.x == goal.x && node.y == goal.y) {
-        const curr = node;
+        let curr = node;
         const path = [];
 
         while (curr.parent) {
           path.push(curr);
-          curr = curr.parent();
+          curr = curr.parent;
         }
 
         return path.reverse();
@@ -45,44 +46,34 @@ const aStar = {
       // push node to closed list, remove from open list.
       node.closed = true;
       const neighbors = aStar.neighbors({ grid, node });
-      console.log("NEIGHBOR NODES");
-      console.log(neighbors);
+      debugger;
 
- 
       for (let i = 0; i <= neighbors.length - 1; i++) {
         const neighbor = neighbors[i];
+        debugger;
 
-        if (neighbor.closed || neighbor.isWall) {
+        if (neighbor.closed || neighbor.isWallc) {
           continue;
         }
 
-        console.log("-------------------------------------");
-        console.log("node gScore", node.g);
-        console.log("neighbor gScore", neighbor.cost);
-        const gScore = node.g || 0 + neighbor.cost;
+        const gScore = (node.g || 0) + neighbor.cost;
         const beenVisited = neighbor.visited;
 
         if (!beenVisited || gScore < neighbor.g) {
-          console.log("has not been visited", !beenVisited);
-          console.log("is node g score less than neighbors", gScore < neighbor.g);
-          console.log("g score", gScore);
           neighbor.visited = true;
           neighbor.parent = node;
-          neighbor.h = neighbor.h || aStar.heuristic(start, goal);
+          neighbor.h = neighbor.h || aStar.heuristic(neighbor, goal);
           neighbor.g = gScore;
           neighbor.f = neighbor.g + neighbor.h;
-
-          console.log("F:" + neighbor.f, "G:" + neighbor.g, "H:" + neighbor.h);
+          neighbor.debug = `F:${neighbor.f} G:${neighbor.g} H:${neighbor.h}`;
 
           if (!beenVisited) {
             openHeap.push(neighbor);
           } else {
-            openHeap.rescoreElement(neighbor);
+            openHeap.rescore(neighbor);
           }
         }
       }
-      console.log("-------------------------------------");
-      console.log("\r")
     }
 
     // failure to find path
@@ -141,11 +132,11 @@ const aStar = {
     }
 
     neighborNodes.forEach((neighbor) => {
-      const MAX_ELEVATION_GAP = 1;
+      const ELEVATION_GAP = 1;
 
       const nodeHeight = node.height.charCodeAt(0);
       const neighborHeight = neighbor.height.charCodeAt(0);
-      const isWall = (Math.abs(nodeHeight - neighborHeight)) > MAX_ELEVATION_GAP;
+      const isWall = (Math.abs(nodeHeight - neighborHeight)) > ELEVATION_GAP;
   
       if (!isWall) return;
       neighbor.isWall = true;
@@ -230,6 +221,10 @@ class PriorityQueue {
     }
   }
 
+  rescore(item) {
+    const elementIdx = this.items.findIndex((el) => el.x == item.x && el.y == item.y);
+  }
+
   size() {
     return this.items.length;
   }
@@ -241,8 +236,7 @@ function setHeighmap(puzzleInput) {
   let goal;
   let grid = [];
 
-  const START_POSITION_ID = "S";
-  const GOAL_POSITION_ID = "E"; 
+  const MAZE_GRID_POINTS_ID = { START: "S", END: "E" }
 
   for (col in puzzleInput[0]) {
     for (let row = 0; row < puzzleInput.length; row++) {
@@ -253,12 +247,12 @@ function setHeighmap(puzzleInput) {
       const gridPoint = puzzleInput[row][col];
       grid[col].push({ x: parseInt(col), y: row, height: gridPoint });
 
-      if (gridPoint == START_POSITION_ID) {
-        start = { x: parseInt(col), y: row, height: 'a' };
+      if (gridPoint == MAZE_GRID_POINTS_ID.START) {
+        start = { x: parseInt(col), y: row, height: "a" };
       }
 
-      if (gridPoint == GOAL_POSITION_ID) {
-        goal = { x: parseInt(col) , y: row, height: 'z' };
+      if (gridPoint == MAZE_GRID_POINTS_ID.END) {
+        goal = { x: parseInt(col) , y: row, height: "z" };
       }
     }
   }
@@ -274,10 +268,17 @@ async function init() {
     const puzzleInput = data.split("\n");
 
     const { start, goal, grid } = setHeighmap(puzzleInput);
-    const shortestPathToGoal = aStar.search({ grid, start, goal });
-    // console.log(goal);
-    // console.log(shortestPathToGoal);
-    // console.log(shortestPathToGoal.length)
+    const solution = aStar.search({ grid, start, goal });
+
+    const shortestPath = solution.map(el => {
+      return {
+        x: el.x,
+        y: el.y
+      }
+    });
+
+    console.log("SHORTEST PATH:", shortestPath);
+    console.log("SHORTEST PATH STEPS:", shortestPath.length);
   } catch(error) {
     console.log(error);
   }
