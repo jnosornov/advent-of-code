@@ -1,42 +1,82 @@
-const COLUMNS = 7;
-const ROWS = 3;
+const GRID_COLUMNS = 7;
+const GRID_ROWS = 0;
+
+const ROCKS = [
+  [
+    [1, 1, 1, 1]
+  ],
+  [
+    [0, 1, 0],
+    [1, 1, 1],
+    [0, 1, 0],
+  ],
+  [
+    [0, 0, 1],
+    [0, 0, 1],
+    [1, 1, 1]
+  ],
+  [
+    [1],
+    [1],
+    [1],
+    [1]
+  ],
+  [
+    [1, 1],
+    [1, 1]
+  ]
+]
 
 class RockFallingSimulation {
-  constructor(jetPattern) {
+  constructor({ rocksToFall, jetPattern }) {
     this.fallingRock = null;
-    this.grid = this.setGrid();
-    this.jetPattern = jetPattern;
+    this.grid = [];
     this.patternPosition = 0;
+    this.rockTowerHeight = 0;
+    this.jetPattern = jetPattern;
+    this.rocksToFall = rocksToFall;
   }
 
-  setGrid() {
-    let grid = [];
-    for (let i = 0; i < ROWS; i++) {
-      grid.push([]);
-      for (let j = 0; j < COLUMNS; j++) {
-        grid[grid.length - 1].push(0);
+  run() {
+    console.log("rocks will start falling...");
+    let rockCounter = 0;
+
+    while (rockCounter + 1 <= this.rocksToFall) {
+      for (let i = 0; i < ROCKS.length; i++) {
+        rockCounter = rockCounter + 1;
+
+        if (rockCounter > this.rocksToFall) break;
+
+        if (rockCounter < 2) {
+          const rock = new Rock(ROCKS[i]);
+          this.fallingRock = rock;
+          rock.place(this.grid)
+          this.renderGrid();
+          this.moveRock();
+        }
       }
     }
-
-    return grid;
   }
 
   collision(x, y) {
     const shape = this.fallingRock.shape;
     const rockRows = shape.length;
     const rockColumns = shape[0].length;
-
+  
     for (let i = 0; i < rockRows; i++) {
       for (let j = 0; j < rockColumns; j++) {
         if (shape[i][j] > 0) {
-          let p = x + j;
-          let q = y + i;
+          let p = y + j;
+          let q = x + i;
 
-          if (p >= 0 && p < COLUMNS && q < ROWS) {
+          if (p >= 0 && p < GRID_COLUMNS && q < this.grid.length) {
+            // in bounds
+            console.log("debugging collisions here...");
             if (this.grid[q][p] > 0) {
               return true;
             }
           } else {
+            // is not in bounds, rock collision with walls
             return true;
           }
         }
@@ -48,46 +88,55 @@ class RockFallingSimulation {
 
   moveRock() {
     if (this.fallingRock === null) return;
-    moveSequence();
-
-    function moveSequence() {
+  
+    const moveSequence = () => {
       let x = this.fallingRock.x;
       let y = this.fallingRock.y;
       const direction = this.jetPattern[this.patternPosition];
 
-      const shouldStartOffPatternAgain = this.patternPosition + 1 === this.jetPattern.length; 
-      position = shouldStartOffPatternAgain ? 0 : position + 1;
+      const shouldStartOffPatternAgain = this.patternPosition + 1 > this.jetPattern.length; 
+      this.patternPosition = shouldStartOffPatternAgain ? 0 : this.patternPosition + 1;
 
       if (direction === ">") {
         // move right
-        this.patternPosition = this.patternPosition + 1;
-
-        if (!this.collision(x + 1, y)) {
+        if (!this.collision(x, y + 1)) {
           this.fallingRock.x = this.fallingRock.x + 1;
           // render board and wait some time
+          this.fallingRock.render(this.grid);
+          this.renderGrid();
         }
       }
 
       if (direction === "<") {
         // move left
-        this.patternPosition = this.patternPosition + 1;
-
-        if (!this.collision(x - 1, y)) {
+        if (!this.collision(x, y - 1)) {
           this.fallingRock.x = this.fallingRock.x - 1;
           // render board and wait some time
+          this.fallingRock.render(this.grid);
+          this.renderGrid();
         }
       }
 
       // move down
-      if (this.collision(x, y + 1)) return;
+      /*
+        if (this.collision(x, y + 1)) {
+          this.rockTowerHeight = this.grid.length - this.fallingRock.y;
+          this.fallingRock = null;
+          return;
+        }
 
-      this.fallingRock.y = this.fallingRock.y + 1;
+        this.fallingRock.y = this.fallingRock.y + 1;
+        this.fallingRock.render(this.grid);
+        this.renderGrid();
+      */
       // render board and wait some time
-      moveSequence();
+      // moveSequence();
     }
+
+    moveSequence();
   }
 
-  renderGridState() {
+  renderGrid() {
     let row = "";
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
@@ -98,27 +147,23 @@ class RockFallingSimulation {
       console.log(row);
       row = "";
     }
-
-    if (this.fallingRock !== null) {
-      this.fallingRock.render(this.grid)
-    }
   }
 }
 
 class Rock {
   constructor(shape) {
     this.shape = shape;
-    this.y = 0;
-    this.x = 2;
+    this.x = 0;
+    this.y = 2;
   }
 
-  render(grid) {
+  place(grid) {
     const DEFAULT_ROWS = 3;
     const rockRows = this.shape.length;
     const rowsToAdd = DEFAULT_ROWS + rockRows;
 
-    for (let i = 1; i < rowsToAdd; i++) {
-      const row = new Array(COLUMNS);
+    for (let i = 1; i <= rowsToAdd; i++) {
+      const row = new Array(GRID_COLUMNS);
       row.fill(0);
 
       grid.unshift(row);
@@ -134,6 +179,11 @@ class Rock {
   }
 }
 
+(function main() {
+  const simulation = new RockFallingSimulation({
+    rocksToFall: 10,
+    jetPattern: ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>",
+  });
 
-const simulation = new RockFallingSimulation()
-simulation.renderGridState();
+  simulation.run();
+})();
