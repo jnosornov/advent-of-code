@@ -72,11 +72,11 @@ class RockFallingSimulation {
 
     const hasMovedToLeft = yDiff === 1;
     const hasMovedToRight = yDiff === -1;
-    const hasMovedDown = xDiff === 1;
+    const hasMovedDown = xDiff === -1;
 
     if (hasMovedToRight) {
       for (let i = 0; i < rockRows; i++) {
-        if (this.grid[x + i][y - 1] > 0 && this.grid[x + i][y + rockColumns - 1] > 0) {
+        if (this.grid[x + i][y + (rockColumns - 1) - 1] > 0 && this.grid[x + i][y + (rockColumns - 1)] > 0) {
           return true;
         }
       }
@@ -84,7 +84,7 @@ class RockFallingSimulation {
 
     if (hasMovedToLeft) {
       for (let i = 0; i < rockRows; i++) {
-        if (this.grid[x + i][y + 1] > 0 && this.grid[x + i][y - rockColumns + 1] > 0) {
+        if (this.grid[x + i][y + 1] > 0 && this.grid[x + i][y] > 0) {
           return true;
         }
       }
@@ -92,7 +92,7 @@ class RockFallingSimulation {
 
     if (hasMovedDown) {
       for (let j = 0; j < rockColumns; j++) {
-        if (this.grid[x + 1][y + j] > 0 && this.grid[x - rockRows + 1][y + j] > 0) {
+        if (this.grid[x + (rockRows - 1) - 1][y + j] > 0 && this.grid[x + (rockRows - 1)][y + j] > 0) {
           return true;
         }
       }
