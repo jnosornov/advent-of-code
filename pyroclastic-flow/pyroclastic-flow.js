@@ -38,7 +38,6 @@ class RockFallingSimulation {
   }
 
   run() {
-    console.log("rocks will start falling...");
     let rockCounter = 0;
 
     while (rockCounter + 1 <= this.rocksToFall) {
@@ -47,24 +46,15 @@ class RockFallingSimulation {
 
         if (rockCounter > this.rocksToFall) break;
 
-        console.log("ROCK:", rockCounter);
-        console.log("pattern position:", this.patternPosition);
         const rock = new Rock(ROCKS[i]);
         this.fallingRock = rock;
         rock.render(this.grid)
-        
-        this.renderGrid();
         this.moveRock();
-
-        // console.log("pattern position:", this.patternPosition);
-        // console.log("rocks height:", this.rockTowerHeight);
-        // console.log("\r");
       }
     }
 
-    // console.log("tower height", this.rockTowerHeight);
-    // console.log("number of rocks", rockCounter);
-    // this.renderGrid();
+    console.log("tower height", this.rockTowerHeight);
+    console.log("number of rocks", rockCounter - 1);
   }
 
   collision(x, y) {
@@ -114,15 +104,12 @@ class RockFallingSimulation {
     if (this.fallingRock === null) return;
   
     const moveSequence = () => {
-      console.log("POSITIONS:", this.patternPosition);
       const direction = this.jetPattern[this.patternPosition];
-      console.log("DIRECTION", direction)
-      const shouldStartOffPatternAgain = this.patternPosition + 1 > this.jetPattern.length; 
+      const shouldStartOffPatternAgain = this.patternPosition + 2 > this.jetPattern.length; 
       this.patternPosition = shouldStartOffPatternAgain ? 0 : this.patternPosition + 1;
 
       if (direction === ">") {
         // move right
-        // console.log("the rock should move right");
         if (!this.collision(this.fallingRock.x, this.fallingRock.y + 1)) {
           this.fallingRock.clear(this.grid);
           this.fallingRock.y = this.fallingRock.y + 1;
@@ -133,7 +120,6 @@ class RockFallingSimulation {
 
       if (direction === "<") {
         // move left
-        // console.log("the rock should move left");
         if (!this.collision(this.fallingRock.x, this.fallingRock.y - 1)) {
           this.fallingRock.clear(this.grid);
           this.fallingRock.y = this.fallingRock.y - 1;
@@ -158,7 +144,6 @@ class RockFallingSimulation {
         return;
       }
 
-      // console.log("the rock should move down");
       this.fallingRock.clear(this.grid);
       this.fallingRock.x = this.fallingRock.x + 1;
       this.fallingRock.render(this.grid);
@@ -240,7 +225,7 @@ class Rock {
 
 (function main() {
   const simulation = new RockFallingSimulation({
-    rocksToFall: 10,
+    rocksToFall: 2022,
     jetPattern: ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>",
   });
 
