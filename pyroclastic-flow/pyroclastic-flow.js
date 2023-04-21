@@ -47,15 +47,17 @@ class RockFallingSimulation {
 
         if (rockCounter > this.rocksToFall) break;
 
-        if (rockCounter < 3) {
-          const rock = new Rock(ROCKS[i]);
-          this.fallingRock = rock;
-          rock.render(this.grid)
-          this.renderGrid();
-          this.moveRock();
-        }
+        const rock = new Rock(ROCKS[i]);
+        this.fallingRock = rock;
+        rock.render(this.grid)
+        // this.renderGrid();
+        this.moveRock();
       }
     }
+
+    console.log("tower height", this.rockTowerHeight);
+    console.log("number of rocks", rockCounter);
+    // this.renderGrid();
   }
 
   collision(x, y) {
@@ -111,38 +113,44 @@ class RockFallingSimulation {
 
       if (direction === ">") {
         // move right
-        console.log("moving rock...to the right");
         if (!this.collision(this.fallingRock.x, this.fallingRock.y + 1)) {
           this.fallingRock.clear(this.grid);
           this.fallingRock.y = this.fallingRock.y + 1;
           this.fallingRock.render(this.grid);
-          this.renderGrid();
+          // this.renderGrid();
         }
       }
 
       if (direction === "<") {
         // move left
-        console.log("moving rock...to the left");
         if (!this.collision(this.fallingRock.x, this.fallingRock.y - 1)) {
           this.fallingRock.clear(this.grid);
           this.fallingRock.y = this.fallingRock.y - 1;
           this.fallingRock.render(this.grid);
-          this.renderGrid();
+          // this.renderGrid();
         }
       }
 
       if (this.collision(this.fallingRock.x + 1, this.fallingRock.y)) {
-        console.log("collision with floor");
-        this.rockTowerHeight = this.grid.length - this.fallingRock.y;
+        const currentRockTowerHeight = this.grid.length - this.fallingRock.x;
+        if (this.rockTowerHeight < currentRockTowerHeight) {
+          this.rockTowerHeight = currentRockTowerHeight;
+        } 
+
+        const rowsToDelete = this.grid.length - this.rockTowerHeight;
+
+        for (let i = 0; i < rowsToDelete; i++) {
+          this.grid.shift();
+        }
+
         this.fallingRock = null;
         return;
       }
 
-      console.log("moving rock...down");
       this.fallingRock.clear(this.grid);
       this.fallingRock.x = this.fallingRock.x + 1;
       this.fallingRock.render(this.grid);
-      this.renderGrid();
+      // this.renderGrid();
 
       moveSequence();
     }
@@ -220,7 +228,7 @@ class Rock {
 
 (function main() {
   const simulation = new RockFallingSimulation({
-    rocksToFall: 10,
+    rocksToFall: 2022,
     jetPattern: ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>",
   });
 
