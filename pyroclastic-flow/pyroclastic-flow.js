@@ -1,5 +1,7 @@
+const fs = require("fs/promises");
+const path = require("path");
+
 const GRID_COLUMNS = 7;
-const GRID_ROWS = 0;
 
 const ROCKS = [
   [
@@ -65,7 +67,7 @@ class RockFallingSimulation {
     const rockColumns = shape[0].length;
 
     // out of bounds
-    if (y < 0 || y + rockColumns > GRID_COLUMNS || x > this.grid.length - 1) {
+    if (y < 0 || (y + rockColumns) > GRID_COLUMNS || (x + rockRows) > this.grid.length) {
       return true;
     }
 
@@ -223,11 +225,19 @@ class Rock {
   }
 }
 
-(function main() {
-  const simulation = new RockFallingSimulation({
-    rocksToFall: 2022,
-    jetPattern: ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>",
-  });
-
-  simulation.run();
+(async function main() {
+  try {
+    const filePath = path.join(__dirname, "/puzzle-input.txt");
+    const data = await fs.readFile(filePath, { encoding: "utf-8" });
+    const puzzleInput = data.toString();
+    
+    const simulation = new RockFallingSimulation({
+     rocksToFall: 2022,
+     jetPattern: puzzleInput,
+   });
+ 
+   simulation.run();
+  } catch (error) {
+    console.log(error);
+  }
 })();
