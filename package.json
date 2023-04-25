@@ -4,7 +4,7 @@
   "description": "project to solve advent of code algorithm challenges",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon pyroclastic-flow/pyroclastic-flow.js",
+    "dev": "nodemon boiling-boulders/boiling-boulders.js",
     "debug": "nodemon inspect hill-climbing-algorithm.js"
   },
   "author": "Johnathan Osorno Valencia",
