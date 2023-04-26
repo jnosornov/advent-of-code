@@ -1,5 +1,4 @@
-const fs = require("fs/promises");
-const path = require("path");
+import getFileContent from "../helpers/file.js";
 
 function dropletsOverlap(droplets) {
   return droplets.reduce((accum, droplet) => {
@@ -62,37 +61,36 @@ function nearByDroplets(droplet) {
   }, []);
 }
 
+
+
 (async function init() {
-  try {
-    const filePath = path.join(__dirname, "/puzzle-input.txt");
-    const data = await fs.readFile(filePath, { encoding: "utf-8" });
-    const droplets = data.split("\n");
+  const contents = await getFileContent({
+    path: new URL("./puzzle-input.txt", import.meta.url),
+  }).catch((error) => console.log(error));
 
-    const totalCubeFaces = droplets.length * 6;
-    const hashMap = dropletsOverlap(droplets);
-    const possibleAdjacentDroplets = dropletCloseByDroplets(droplets);
+  const droplets = contents.split("\n");
+  const totalCubeFaces = droplets.length * 6;
+  const hashMap = dropletsOverlap(droplets);
+  const possibleAdjacentDroplets = dropletCloseByDroplets(droplets);
 
-    let adjacentFacesCounter = 0;
-    for (let i = 0; i < possibleAdjacentDroplets.length; i++) {
-      const dropletExists = hashMap[possibleAdjacentDroplets[i]] !== undefined;
-     
-      if (dropletExists) {
-        hashMap[possibleAdjacentDroplets[i]] += 1;
-        adjacentFacesCounter += 1;
-      }
+  let adjacentFacesCounter = 0;
+  for (let i = 0; i < possibleAdjacentDroplets.length; i++) {
+    const dropletExists = hashMap[possibleAdjacentDroplets[i]] !== undefined;
+    
+    if (dropletExists) {
+      hashMap[possibleAdjacentDroplets[i]] += 1;
+      adjacentFacesCounter += 1;
     }
-
-    const surfarceArea = totalCubeFaces - adjacentFacesCounter;
-    console.log("SCANNED LAVA DROPLET SURFACE AREA:", surfarceArea);
-
-    const { airCubes } = getAirCubes(possibleAdjacentDroplets);
-
-    // the intersection of adjacent cubes could be a droplet
-    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
-
-    const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
-    console.log("EXTERIOR SURFACE", exteriorSurface);
-  } catch (error) {
-    console.log(error);
   }
+
+  const surfarceArea = totalCubeFaces - adjacentFacesCounter;
+  console.log("SCANNED LAVA DROPLET SURFACE AREA:", surfarceArea);
+
+  const { airCubes } = getAirCubes(possibleAdjacentDroplets);
+
+  // the intersection of adjacent cubes could be a droplet
+  const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
+
+  const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
+  console.log("EXTERIOR SURFACE", exteriorSurface);
 })();

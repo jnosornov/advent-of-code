@@ -1,5 +1,4 @@
-const fs = require("fs/promises");
-const path = require("path");
+import getFileContent from "../helpers/file.js";
 
 const GRID_COLUMNS = 7;
 
@@ -226,18 +225,15 @@ class Rock {
 }
 
 (async function main() {
-  try {
-    const filePath = path.join(__dirname, "/puzzle-input.txt");
-    const data = await fs.readFile(filePath, { encoding: "utf-8" });
-    const puzzleInput = data.toString();
-    
-    const simulation = new RockFallingSimulation({
-     rocksToFall: 2022,
-     jetPattern: puzzleInput,
-   });
- 
-   simulation.run();
-  } catch (error) {
-    console.log(error);
-  }
+  const contents = await getFileContent({
+    path: new URL("./puzzle-input.txt", import.meta.url),
+  }).catch((error) => console.log(error));
+
+  const puzzleInput = contents.toString();
+  const simulation = new RockFallingSimulation({
+    rocksToFall: 2022,
+    jetPattern: puzzleInput,
+  });
+
+  simulation.run();
 })();

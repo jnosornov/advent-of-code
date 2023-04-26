@@ -1,5 +1,4 @@
-const fs = require("fs/promises");
-const path = require("path");
+import getFileContent from "../helpers/file.js";
 
 const aStar = {
   init: function(grid) {
@@ -238,7 +237,7 @@ function setHeighmap(puzzleInput) {
 
   const MAZE_GRID_POINTS_ID = { START: "S", END: "E" }
 
-  for (col in puzzleInput[0]) {
+  for (let col in puzzleInput[0]) {
     for (let row = 0; row < puzzleInput.length; row++) {
       if (!grid[col]) {
         grid[col] = [];
@@ -260,28 +259,24 @@ function setHeighmap(puzzleInput) {
   return { start, goal, grid };
 }
 
-// main
-async function init() {
-  try {
-    const filePath = path.join(__dirname, "/puzzle-input.txt");
-    const data = await fs.readFile(filePath, { encoding: "utf-8" });
-    const puzzleInput = data.split("\n");
+(async function init() {
+  const contents = await getFileContent({
+    path: new URL("./puzzle-input.txt", import.meta.url),
+  }).catch((error) => console.log(error));
+  
+  const puzzleInput = contents.split("\n");
+  console.log("puzzle input", puzzleInput);
 
-    const { start, goal, grid } = setHeighmap(puzzleInput);
-    const solution = aStar.search({ grid, start, goal });
+  const { start, goal, grid } = setHeighmap(puzzleInput);
+  const solution = aStar.search({ grid, start, goal });
 
-    const shortestPath = solution.map(el => {
-      return {
-        x: el.x,
-        y: el.y
-      }
-    });
+  const shortestPath = solution.map(el => {
+    return {
+      x: el.x,
+      y: el.y
+    }
+  });
 
-    console.log("SHORTEST PATH:", shortestPath);
-    console.log("SHORTEST PATH STEPS:", shortestPath.length);
-  } catch(error) {
-    console.log(error);
-  }
-}
-
-init();
+  console.log("SHORTEST PATH:", shortestPath);
+  console.log("SHORTEST PATH STEPS:", shortestPath.length);
+})();
