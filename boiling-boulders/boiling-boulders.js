@@ -10,6 +10,18 @@ function dropletsOverlap(droplets) {
   }, {});
 };
 
+function getAirCubes(adjacentCubes) {
+  return adjacentCubes.reduce((accum, cube) => {
+    accum[cube] = (accum[cube] || 0) + 1;
+
+    return {
+      ...accum,
+      airCubes: accum[cube] === 6 ? [...accum.airCubes, cube] : [...accum.airCubes]
+    }
+  }, { airCubes: [] });
+}
+
+// might generate original droplets coordinates
 function dropletCloseByDroplets(droplets) {
   return droplets.reduce((accum, droplet) => {
     const closeByDroplets = nearByDroplets(droplet);
@@ -72,6 +84,14 @@ function nearByDroplets(droplet) {
 
     const surfarceArea = totalCubeFaces - adjacentFacesCounter;
     console.log("SCANNED LAVA DROPLET SURFACE AREA:", surfarceArea);
+
+    const { airCubes } = getAirCubes(possibleAdjacentDroplets);
+
+    // the intersection of adjacent cubes could be a droplet
+    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
+
+    const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
+    console.log("EXTERIOR SURFACE", exteriorSurface);
   } catch (error) {
     console.log(error);
   }
