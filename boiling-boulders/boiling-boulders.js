@@ -1,12 +1,54 @@
 import getFileContent from "../helpers/file.js";
+import { DROPLET_SIDES } from "./constants.js"
 
-function dropletsOverlap(droplets) {
+function setDropletsMap(droplets) {
   return droplets.reduce((accum, droplet) => {
     return {
       ...accum,
       [droplet]: 0,
     }
   }, {});
+};
+
+function listLikelihoodNearByDroplets(droplets) {
+  return droplets.reduce((accum, droplet) => {
+    const nearByDroplets = getNearByDroplets(droplet);
+
+    return [
+      ...accum,
+      ...nearByDroplets
+    ]
+  }, []);
+};
+
+// TODO: simplify
+function getNearByDroplets(droplet) {
+  const dropletCoordinates = droplet.split(",");
+
+  return dropletCoordinates.reduce((accum, coordinate, index, array) => {
+    let temp = [];
+    const _coordinate = parseInt(coordinate);
+
+    if (index === 0) {
+      temp.push(`${_coordinate + 1},${array[index + 1]},${array[index + 2]}`);
+      temp.push(`${_coordinate - 1},${array[index + 1]},${array[index + 2]}`);
+    }
+
+    if (index === 1) {
+      temp.push(`${array[index - 1]},${_coordinate + 1},${array[index + 1]}`);
+      temp.push(`${array[index - 1]},${_coordinate - 1},${array[index + 1]}`);
+    }
+
+    if (index === 2) {
+      temp.push(`${array[index - 2]},${array[index - 1]},${_coordinate + 1}`);
+      temp.push(`${array[index - 2]},${array[index - 1]},${_coordinate - 1}`);
+    }
+
+    return [
+      ...accum,
+      ...temp
+    ]
+  }, []);
 };
 
 function getAirCubes(adjacentCubes) {
@@ -18,50 +60,7 @@ function getAirCubes(adjacentCubes) {
       airCubes: accum[cube] === 6 ? [...accum.airCubes, cube] : [...accum.airCubes]
     }
   }, { airCubes: [] });
-}
-
-// might generate original droplets coordinates
-function dropletCloseByDroplets(droplets) {
-  return droplets.reduce((accum, droplet) => {
-    const closeByDroplets = nearByDroplets(droplet);
-
-    return [
-      ...accum,
-      ...closeByDroplets
-    ]
-  }, []);
-}
-
-function nearByDroplets(droplet) {
-  const coordinates = droplet.split(",");
-
-  return coordinates.reduce((accum, coordinate, index, array) => {
-    let temp = [];
-    const c = parseInt(coordinate);
-
-    if (index === 0) {
-      temp.push(`${c + 1},${array[index + 1]},${array[index + 2]}`);
-      temp.push(`${c - 1},${array[index + 1]},${array[index + 2]}`);
-    }
-
-    if (index === 1) {
-      temp.push(`${array[index - 1]},${c + 1},${array[index + 1]}`);
-      temp.push(`${array[index - 1]},${c - 1},${array[index + 1]}`);
-    }
-
-    if (index === 2) {
-      temp.push(`${array[index - 2]},${array[index - 1]},${c + 1}`);
-      temp.push(`${array[index - 2]},${array[index - 1]},${c - 1}`);
-    }
-
-    return [
-      ...accum,
-      ...temp
-    ]
-  }, []);
-}
-
-
+};
 
 (async function init() {
   const contents = await getFileContent({
@@ -69,28 +68,34 @@ function nearByDroplets(droplet) {
   }).catch((error) => console.log(error));
 
   const droplets = contents.split("\n");
-  const totalCubeFaces = droplets.length * 6;
-  const hashMap = dropletsOverlap(droplets);
-  const possibleAdjacentDroplets = dropletCloseByDroplets(droplets);
 
-  let adjacentFacesCounter = 0;
-  for (let i = 0; i < possibleAdjacentDroplets.length; i++) {
-    const dropletExists = hashMap[possibleAdjacentDroplets[i]] !== undefined;
-    
-    if (dropletExists) {
-      hashMap[possibleAdjacentDroplets[i]] += 1;
-      adjacentFacesCounter += 1;
+  (function firstStar() {
+    const dropletsMap = setDropletsMap(droplets);
+    const likelihoodNearByDroplets = listLikelihoodNearByDroplets(droplets);
+  
+    let dropletsConnectedSides = 0;
+    for (let i = 0; i < likelihoodNearByDroplets.length; i++) {
+      const droplet = likelihoodNearByDroplets[i];
+      if (!dropletsMap.hasOwnProperty(droplet)) continue;
+
+      dropletsMap[droplet] += 1;
+      dropletsConnectedSides += 1;
     }
+
+    const dropletsSides = droplets.length * DROPLET_SIDES;
+    const surfaceArea = dropletsSides - dropletsConnectedSides;
+
+    console.log(`The surface area of the scanned lava droplets is ${surfaceArea}`);
+  })();
+
+
+  function secondStar() {
+    const { airCubes } = getAirCubes(possibleAdjacentDroplets);
+  
+    // the intersection of adjacent cubes could be a droplet
+    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
+  
+    const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
+    console.log("EXTERIOR SURFACE", exteriorSurface);
   }
-
-  const surfarceArea = totalCubeFaces - adjacentFacesCounter;
-  console.log("SCANNED LAVA DROPLET SURFACE AREA:", surfarceArea);
-
-  const { airCubes } = getAirCubes(possibleAdjacentDroplets);
-
-  // the intersection of adjacent cubes could be a droplet
-  const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
-
-  const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
-  console.log("EXTERIOR SURFACE", exteriorSurface);
 })();
