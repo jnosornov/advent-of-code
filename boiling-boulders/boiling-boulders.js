@@ -57,7 +57,7 @@ function getAirCubes(adjacentCubes) {
 
     return {
       ...accum,
-      airCubes: accum[cube] === 6 ? [...accum.airCubes, cube] : [...accum.airCubes]
+      airCubes: accum[cube] === DROPLET_SIDES ? [...accum.airCubes, cube] : [...accum.airCubes]
     }
   }, { airCubes: [] });
 };
@@ -68,34 +68,31 @@ function getAirCubes(adjacentCubes) {
   }).catch((error) => console.log(error));
 
   const droplets = contents.split("\n");
+  const dropletsSides = droplets.length * DROPLET_SIDES;
 
-  (function firstStar() {
-    const dropletsMap = setDropletsMap(droplets);
-    const likelihoodNearByDroplets = listLikelihoodNearByDroplets(droplets);
-  
-    let dropletsConnectedSides = 0;
-    for (let i = 0; i < likelihoodNearByDroplets.length; i++) {
-      const droplet = likelihoodNearByDroplets[i];
-      if (!dropletsMap.hasOwnProperty(droplet)) continue;
+  // first star
+  const dropletsMap = setDropletsMap(droplets);
+  const likelihoodNearByDroplets = listLikelihoodNearByDroplets(droplets);
 
-      dropletsMap[droplet] += 1;
-      dropletsConnectedSides += 1;
-    }
+  let dropletsConnectedSides = 0;
+  for (let i = 0; i < likelihoodNearByDroplets.length; i++) {
+    const droplet = likelihoodNearByDroplets[i];
+    if (!dropletsMap.hasOwnProperty(droplet)) continue;
 
-    const dropletsSides = droplets.length * DROPLET_SIDES;
-    const surfaceArea = dropletsSides - dropletsConnectedSides;
-
-    console.log(`The surface area of the scanned lava droplets is ${surfaceArea}`);
-  })();
-
-
-  function secondStar() {
-    const { airCubes } = getAirCubes(possibleAdjacentDroplets);
-  
-    // the intersection of adjacent cubes could be a droplet
-    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
-  
-    const exteriorSurface = totalCubeFaces - adjacentFacesCounter - (realAirCubes.length * 6);
-    console.log("EXTERIOR SURFACE", exteriorSurface);
+    dropletsMap[droplet] += 1;
+    dropletsConnectedSides += 1;
   }
+
+  const surfaceArea = dropletsSides - dropletsConnectedSides;
+  console.log(`The surface area of the scanned lava droplets is ${surfaceArea}`);
+
+  // TODO: fix solution
+  /*
+    second star
+    const { airCubes } = getAirCubes(likelihoodNearByDroplets);
+
+    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
+    const exteriorSurface = dropletsSides - dropletsConnectedSides - (realAirCubes.length * 6);
+    console.log(`The exterior surface area of the scanned lava droplets is ${exteriorSurface}`);
+  */
 })();
