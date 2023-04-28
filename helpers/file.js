@@ -1,8 +1,11 @@
 import { readFile } from "fs/promises";
 
-async function getFileContent({ path }) {
+async function getFileContent({ path, opts }) {
   try {
-    return await readFile(path, { encoding: "utf8" });
+    const raw = await readFile(path, { encoding: "utf8" });
+    if (!opts) return raw;
+
+    return { input: opts(raw) };
   } catch (error) {
     console.log(error.message);
   }

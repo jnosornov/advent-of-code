@@ -1,28 +1,26 @@
 import getFileContent from "../helpers/file.js";
 import { DROPLET_SIDES } from "./constants.js"
 
-function setDropletsMap(droplets) {
+function setMap(droplets) {
   return droplets.reduce((accum, droplet) => {
     return {
       ...accum,
       [droplet]: 0,
     }
-  }, {});
+  }, { area: droplets.length * DROPLET_SIDES });
 };
 
-function listLikelihoodNearByDroplets(droplets) {
+function getLikelihoodDroplets(droplets) {
   return droplets.reduce((accum, droplet) => {
-    const nearByDroplets = getNearByDroplets(droplet);
-
     return [
       ...accum,
-      ...nearByDroplets
+      ...nearByDroplets(droplet)
     ]
   }, []);
 };
 
 // TODO: simplify
-function getNearByDroplets(droplet) {
+function nearByDroplets(droplet) {
   const dropletCoordinates = droplet.split(",");
 
   return dropletCoordinates.reduce((accum, coordinate, index, array) => {
@@ -51,48 +49,31 @@ function getNearByDroplets(droplet) {
   }, []);
 };
 
-function getAirCubes(adjacentCubes) {
-  return adjacentCubes.reduce((accum, cube) => {
-    accum[cube] = (accum[cube] || 0) + 1;
+function getDropletsSurfaceArea(droplets) {
+  const map = setMap(droplets);
+  const mightBeDroplet = getLikelihoodDroplets(droplets);
 
-    return {
-      ...accum,
-      airCubes: accum[cube] === DROPLET_SIDES ? [...accum.airCubes, cube] : [...accum.airCubes]
-    }
-  }, { airCubes: [] });
-};
+  for (let i = 0; i < mightBeDroplet.length; i++) {
+    const droplet = mightBeDroplet[i];
+    if (!map.hasOwnProperty(droplet)) continue;
 
-(async function init() {
-  const contents = await getFileContent({
-    path: new URL("./puzzle-input.txt", import.meta.url),
-  }).catch((error) => console.log(error));
-
-  const droplets = contents.split("\n");
-  const dropletsSides = droplets.length * DROPLET_SIDES;
-
-  // first star
-  const dropletsMap = setDropletsMap(droplets);
-  const likelihoodNearByDroplets = listLikelihoodNearByDroplets(droplets);
-
-  let dropletsConnectedSides = 0;
-  for (let i = 0; i < likelihoodNearByDroplets.length; i++) {
-    const droplet = likelihoodNearByDroplets[i];
-    if (!dropletsMap.hasOwnProperty(droplet)) continue;
-
-    dropletsMap[droplet] += 1;
-    dropletsConnectedSides += 1;
+    map[droplet] += 1;
+    map.area -= 1;
   }
 
-  const surfaceArea = dropletsSides - dropletsConnectedSides;
+  return map.area;
+}
+
+(async function init() {
+  const opts = (entry) => entry.split("\n");
+
+  const contents = await getFileContent({
+    path: new URL("./puzzle-input.txt", import.meta.url),
+    opts,
+  }).catch((error) => console.log(error));
+
+  const { input: droplets } = contents;
+  const surfaceArea = getDropletsSurfaceArea(droplets);
+
   console.log(`The surface area of the scanned lava droplets is ${surfaceArea}`);
-
-  // TODO: fix solution
-  /*
-    second star
-    const { airCubes } = getAirCubes(likelihoodNearByDroplets);
-
-    const realAirCubes = airCubes.filter((el) => !droplets.includes(el));
-    const exteriorSurface = dropletsSides - dropletsConnectedSides - (realAirCubes.length * 6);
-    console.log(`The exterior surface area of the scanned lava droplets is ${exteriorSurface}`);
-  */
 })();
