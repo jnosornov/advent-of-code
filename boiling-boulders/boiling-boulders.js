@@ -64,6 +64,10 @@ function getDropletsSurfaceArea(droplets) {
   return map.area;
 }
 
+function getDropletsExteriorSurface(droplets) {
+  return 0;
+}
+
 (async function init() {
   const opts = (entry) => entry.split("\n");
 
@@ -74,6 +78,8 @@ function getDropletsSurfaceArea(droplets) {
 
   const { input: droplets } = contents;
   const surfaceArea = getDropletsSurfaceArea(droplets);
+  const exteriorSurface = getDropletsExteriorSurface(droplets);
 
-  console.log(`The surface area of the scanned lava droplets is ${surfaceArea}`);
+  console.log(`⭐   scanned lava droplets surface area: ${surfaceArea}`);
+  console.log(`⭐⭐ scanned lava droplets exterior area: ${exteriorSurface}`);
 })();
