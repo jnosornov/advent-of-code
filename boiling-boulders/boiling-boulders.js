@@ -1,4 +1,5 @@
 import getFileContent from "../helpers/file.js";
+import run from "../helpers/run.js"
 import { DROPLET_SIDES } from "./constants.js"
 
 function setMap(droplets) {
@@ -64,22 +65,23 @@ function getDropletsSurfaceArea(droplets) {
   return map.area;
 }
 
-function getDropletsExteriorSurface(droplets) {
-  return 0;
-}
-
-(async function init() {
+async function init(filename = "./input.txt") {
   const opts = (entry) => entry.split("\n");
 
   const contents = await getFileContent({
-    path: new URL("./puzzle-input.txt", import.meta.url),
+    path: new URL(filename, import.meta.url),
     opts,
-  }).catch((error) => console.log(error));
+  });
 
   const { input: droplets } = contents;
   const surfaceArea = getDropletsSurfaceArea(droplets);
-  const exteriorSurface = getDropletsExteriorSurface(droplets);
 
-  console.log(`⭐   scanned lava droplets surface area: ${surfaceArea}`);
-  console.log(`⭐⭐ scanned lava droplets exterior area: ${exteriorSurface}`);
-})();
+  console.log(`⭐ scanned lava droplets surface area: ${surfaceArea}`);
+  return { surfaceArea };
+};
+
+run(init);
+
+export {
+  init,
+}
