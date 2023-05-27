@@ -1,10 +1,10 @@
+const { getDirectories } = require("./helpers/file");
 const select = require("./select");
 
-const choices = [
-  "boilling bolders",
-  "hill climbing algorithm",
-  "not enought minerals",
-  "pyclastic flow"
-];
+(async function init() {
+  const folders = await getDirectories(`${process.cwd()}/challenges`);
+  const choices = folders.map(folder => folder.replaceAll("-", " "));
+  
+  select.init(choices)
+})();
 
-select.init(choices);
