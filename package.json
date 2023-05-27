@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "project to solve advent of code algorithm challenges",
   "main": "index.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "dev": "nodemon rucksack-reorganization/rucksack-reorganization.js",
+    "dev": "node index.js",
     "debug": "nodemon inspect hill-climbing-algorithm.js",
     "test": "mocha \"./*/*.test.js\" --require mocha-suppress-logs",
     "test:watch": "mocha \"./*/*.test.js\" --watch --parallel --require mocha-suppress-logs"
