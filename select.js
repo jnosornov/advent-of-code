@@ -3,13 +3,13 @@ const rdl = require("readline")
 const constants = require("./constants");
 
 const select = {
-  init: (items = []) => {
+  init: ({ options = [], ChoseOptionEmitter }) => {
     let cursorLocation = { x: 0, y: 0 }
 
-    for (let i = 0; i < items.length; i++) {
-      const item = new Item(items[i])
+    for (let i = 0; i < options.length; i++) {
+      const item = new Item(options[i])
 
-      if (i === items.length - 1) {
+      if (i === options.length - 1) {
         const output = item
           .assemble()
           .highlight()
@@ -34,26 +34,31 @@ const select = {
     stdin.on("data", listener)
 
     const {
+      enter,
       ctrlc,
       upArrow,
       downArrow
     } = keyEvents({
       listener,
+      ChoseOptionEmitter,
       cursorLocation,
-      items,
+      options,
       actions: {
         hideCursor,
-        showCursor
+        showCursor,
+        cleanUp
       }
     })
 
     function listener(c) {
       switch (c) {
-        case '\u0003':
+        case "\r":
+          return enter()
+        case "\u0003":
           return ctrlc()
-        case '\u001b[A':
+        case "\u001b[A":
           return upArrow()
-        case '\u001b[B':
+        case "\u001b[B":
           return downArrow()
       }
     }
@@ -65,39 +70,51 @@ const select = {
     function showCursor() {
       stdout.write("\x1B[?25h")
     }
+
+    function cleanUp() {
+      stdout.write("\033c")
+    }
   }
 }
 
-function keyEvents({ listener, cursorLocation, items, actions }) {
-  const { showCursor } = actions;
+function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, actions }) {
+  const { showCursor, cleanUp } = actions;
 
   const enter = () => {
+    const selected = options[cursorLocation.y - 1]
+
     stdin.off("data", listener)
     stdin.setRawMode(false)
     stdin.pause()
+    showCursor()
+    // TODO: clean up after stdout write
+    // cleanUp()
+
+    ChoseOptionEmitter.emit("event", selected)
   }
 
   const ctrlc = () => {
     stdin.off("data", listener)
     stdin.setRawMode(false)
     stdin.pause()
+    cleanUp()
     showCursor()
   }
 
   const upArrow = () => {
     let y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(items[y - 1]).assemble().valueOf())
+    stdout.write(new Item(options[y - 1]).assemble().valueOf())
 
     if (cursorLocation.y === 1) {
-      cursorLocation.y = items.length
+      cursorLocation.y = options.length
     } else {
       cursorLocation.y--
     }
 
     y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(items[y - 1]).assemble().highlight().valueOf())
+    stdout.write(new Item(options[y - 1]).assemble().highlight().valueOf())
   }
 
   const downArrow = () => {
@@ -105,12 +122,12 @@ function keyEvents({ listener, cursorLocation, items, actions }) {
     let y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
 
-    output = new Item(items[y - 1])
+    output = new Item(options[y - 1])
       .assemble()
       .valueOf()
     stdout.write(output)
 
-    if (cursorLocation.y === items.length) {
+    if (cursorLocation.y === options.length) {
       cursorLocation.y = 1
     } else {
       cursorLocation.y++
@@ -119,7 +136,7 @@ function keyEvents({ listener, cursorLocation, items, actions }) {
     y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
 
-    output = new Item(items[y - 1])
+    output = new Item(options[y - 1])
       .assemble()
       .highlight()
       .valueOf()
