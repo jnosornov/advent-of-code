@@ -2,6 +2,8 @@ const { stdin, stdout } = process
 const rdl = require("readline")
 const constants = require("./constants");
 
+
+
 const select = {
   init: ({ options = [], ChoseOptionEmitter }) => {
     let cursorLocation = { x: 0, y: 0 }
@@ -80,15 +82,13 @@ const select = {
 function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, actions }) {
   const { showCursor, cleanUp } = actions;
 
-  const enter = () => {
+  const enter = async () => {
     const selected = options[cursorLocation.y - 1]
 
     stdin.off("data", listener)
     stdin.setRawMode(false)
     stdin.pause()
-    showCursor()
-    // TODO: clean up after stdout write
-    // cleanUp()
+    cleanUp()
 
     ChoseOptionEmitter.emit("event", selected)
   }
