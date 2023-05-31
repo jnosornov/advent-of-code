@@ -9,7 +9,7 @@ const select = {
     for (let i = 0; i < options.length; i++) {
       const item = new Item(options[i])
 
-      if (i === options.length - 1) {
+      if (i === 0) {
         const output = item
           .assemble()
           .highlight()
@@ -24,7 +24,7 @@ const select = {
         stdout.write(output);
       }
 
-      cursorLocation.y = i + 1
+      cursorLocation.y = 1
     }
 
     stdin.setRawMode(true)
