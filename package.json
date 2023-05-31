@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "project to solve advent of code algorithm challenges",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "node index.js",
     "debug": "nodemon inspect hill-climbing-algorithm.js",

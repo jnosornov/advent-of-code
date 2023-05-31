@@ -1,7 +1,7 @@
-const { spawn } = require("child_process")
-const { EventEmitter } = require("events")
-const { getDirectories } = require("./helpers/file")
-const select = require("./select");
+import { spawn } from "node:child_process"
+import { EventEmitter } from "node:events"
+import { getDirectories } from "./helpers/file.js"
+import select from "./select.js"
 
 (async function init() {
   const ChoseOptionEmitter = new EventEmitter()
@@ -15,6 +15,7 @@ const select = require("./select");
     })
 
     child.stderr.on("data", (data) => {
+      console.log("failed");
       process.stdout.write(data)
     })
   });

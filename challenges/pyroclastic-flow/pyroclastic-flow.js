@@ -1,4 +1,4 @@
-import getFileContent from "../helpers/file.js";
+import { getFileContent } from "../../helpers/file.js";
 
 const GRID_COLUMNS = 7;
 

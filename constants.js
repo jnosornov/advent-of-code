@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   NEW_LINE: "\n",
   ITEM_POINTER: "⦿",
   COLORS: {

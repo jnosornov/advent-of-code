@@ -1,4 +1,4 @@
-const { readFile, readdir } = require("fs/promises");
+import { readFile, readdir } from "node:fs/promises"
 
 async function getFileContent({ path, opts }) {
   try {
@@ -21,7 +21,7 @@ const getDirectories = async source =>
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name)
 
-module.exports = {
+export {
   getDirectories,
   getFileContent,
 }

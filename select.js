@@ -1,8 +1,6 @@
 const { stdin, stdout } = process
-const rdl = require("readline")
-const constants = require("./constants");
-
-
+import * as rdl from "node:readline"
+import constants from "./constants.js"
 
 const select = {
   init: ({ options = [], ChoseOptionEmitter }) => {
@@ -74,7 +72,8 @@ const select = {
     }
 
     function cleanUp() {
-      stdout.write("\033c")
+      // unicode to avoid octal literals not allowed in strict mode
+      stdout.write("\u033c")
     }
   }
 }
@@ -176,4 +175,4 @@ function Item(value, color = "yellow") {
   }
 }
 
-module.exports = select
+export default select
