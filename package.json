@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon boiling-boulders/boiling-boulders.js",
+    "dev": "nodemon rucksack-reorganization/rucksack-reorganization.js",
     "debug": "nodemon inspect hill-climbing-algorithm.js",
     "test": "mocha \"./*/*.test.js\" --require mocha-suppress-logs",
     "test:watch": "mocha \"./*/*.test.js\" --watch --parallel --require mocha-suppress-logs"
