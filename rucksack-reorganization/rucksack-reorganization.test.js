@@ -1,5 +1,9 @@
 import { equal } from "assert"
-import rucksackReorganization,{ getRuckSackSharedItem, getArrangementPriority } from "./rucksack-reorganization.js"
+import rucksackReorganization,
+{ getRuckSackSharedItem,
+  getArrangementPriority,
+  getGroupBadge
+} from "./rucksack-reorganization.js"
 
 describe("Rucksack Reorganization", () => {
   describe("finds rucksack's shared item type between compartments", () => {
@@ -86,10 +90,46 @@ describe("Rucksack Reorganization", () => {
     })
   })
 
-  it("matches the rucksacks priority sum", async () => {
-    const prioritySum = await rucksackReorganization("./input.sample.txt")
-    const expectedSum = 157
+  describe("finds group badge", () => {
+    it("for the 1st Elves group", () => {
+      const groupRucksacks = [
+        "vJrwpWtwJgWrhcsFMMfFFhFp",
+        "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+        "PmmdzqPrVvPwwTWBwg"
+      ]
+      const groupBadge = getGroupBadge(groupRucksacks)
+      const expectedGroupBadge = "r"
 
-    equal(prioritySum, expectedSum)
+      equal(groupBadge, expectedGroupBadge)
+    })
+
+    it("for the 2nd Elves group", () => {
+      const groupRucksacks = [
+        "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
+        "ttgJtRGJQctTZtZT",
+        "CrZsJsPPZsGzwwsLwLmpwMDw"
+      ]
+      const groupBadge = getGroupBadge(groupRucksacks)
+      const expectedGroupBadge = "Z"
+
+      equal(groupBadge, expectedGroupBadge)
+    })
+  })
+
+
+  describe("matches the rucksacks priority sum", () => {
+    it("when the item type shared between compartments is found", async () => {
+      const expectedSum = 157
+      const prioritySum = await rucksackReorganization("./input.sample.txt")
+  
+      equal(prioritySum, expectedSum)
+    })
+
+    it("when the Elves group badge item type is found", async () => {
+      const expectedSum = 70
+      const prioritySum = await rucksackReorganization("./input.sample.txt", "secondHalf")
+  
+      equal(prioritySum, expectedSum)
+    })
   })
 })

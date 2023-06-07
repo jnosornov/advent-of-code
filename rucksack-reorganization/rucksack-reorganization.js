@@ -2,6 +2,7 @@ import getFileContent from "../helpers/file.js"
 import run from "../helpers/run.js"
 
 const getRuckSackSharedItem = (rucksack) => {
+  // maps rucksack first compartment item types
   const map = new Map()
   let sharedItem
 
@@ -45,7 +46,43 @@ const getArrangementPriority = (itemType) => {
   return 0
 }
 
-async function init(filename = "./input.txt") {
+const getGroupBadge = (rucksacks) => {
+  // maps Elves group rucksacks item types
+  let badge
+  const map = new Map()
+
+  for (let i = 0; i < rucksacks.length; i++) {
+    const rucksack = rucksacks[i]
+    const nthRucksack = i + 1;
+
+    for (let item in rucksack) {
+      const itemType = rucksack[item]
+      const mapItem = map.get(itemType)
+
+      if (!mapItem && nthRucksack === 1) {
+        map.set(itemType, 1)
+        continue
+      }
+
+      if (mapItem && nthRucksack === 2) {
+        map.set(itemType, 2)
+        continue
+      }
+
+      if (mapItem && nthRucksack === 3 && mapItem === 2) {
+        map.set(itemType, 3)
+
+        const _mapItem = map.get(itemType)
+        if (_mapItem === rucksacks.length) {
+          badge = itemType
+          return badge
+        }
+      }
+    }
+  }
+}
+
+async function init(filename = "./input.txt", challenge = "firstHalf" ) {
   const opts = (entry) => entry.split("\n")
 
   const contents = await getFileContent({
@@ -55,16 +92,43 @@ async function init(filename = "./input.txt") {
 
   const { input: rucksacks } = contents
 
-  let prioritySum = 0
-  for (let i = 0; i < rucksacks.length; i++) {
-    const rucksack = rucksacks[i]
-    const sharedItem = getRuckSackSharedItem(rucksack)
-
-    const arrangementPriority = getArrangementPriority(sharedItem)
-    prioritySum = prioritySum + arrangementPriority
+  if (challenge === "firstHalf") {
+    const result = starOne()
+    return result
+  } else if (challenge === "secondHalf") {
+    const result = starTwo()
+    return result
   }
 
-  return prioritySum
+  function starOne() {
+    let prioritySum = 0
+    for (let i = 0; i < rucksacks.length; i++) {
+      const rucksack = rucksacks[i]
+      const sharedItem = getRuckSackSharedItem(rucksack)
+  
+      const arrangementPriority = getArrangementPriority(sharedItem)
+      prioritySum = prioritySum + arrangementPriority
+    }
+
+    console.log("Priority Sum:", prioritySum)
+    return prioritySum
+  }
+
+  function starTwo() {
+    let prioritySum = 0
+    for (let i = 0; i < rucksacks.length; i++) {
+      const isElvesGroup = ((i + 1) % 3) === 0
+
+      if (!isElvesGroup) continue
+      const badge = getGroupBadge([rucksacks[i - 2], rucksacks[i - 1], rucksacks[i]])
+  
+      const arrangementPriority = getArrangementPriority(badge)
+      prioritySum = prioritySum + arrangementPriority
+    }
+  
+    console.log("Priority Sum:", prioritySum)
+    return prioritySum
+  }
 }
 
 run(init);
@@ -72,5 +136,6 @@ run(init);
 export {
   getRuckSackSharedItem,
   getArrangementPriority,
+  getGroupBadge,
   init as default,
 }
