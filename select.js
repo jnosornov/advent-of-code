@@ -3,14 +3,18 @@ import * as rdl from "node:readline"
 import constants from "./constants.js"
 
 const select = {
-  init: ({ options = [], ChoseOptionEmitter }) => {
+  init: async ({ options = [], ChoseOptionEmitter }) => {
     const { NEW_LINE } = constants
-    let cursorLocation = { x: 0, y: 0 }
+    let selectedOptionIdx = 0
+    let optionsInitialLocation = 0
 
     stdout.write(NEW_LINE)
     stdout.write("Choose the challenge to be executed")
     stdout.write(NEW_LINE)
     stdout.write(NEW_LINE)
+
+    const { rows } = await select.getCursorPosition()
+    optionsInitialLocation = rows - 1
 
     for (let i = 0; i < options.length; i++) {
       const item = new Item(options[i])
@@ -29,8 +33,6 @@ const select = {
         
         stdout.write(output);
       }
-
-      cursorLocation.y = 4
     }
 
     stdin.setRawMode(true)
@@ -44,10 +46,11 @@ const select = {
       ctrlc,
       upArrow,
       downArrow
-    } = keyEvents({
+    } = select.keyEvents({
       listener,
       ChoseOptionEmitter,
-      cursorLocation,
+      selectedOptionIdx,
+      optionsInitialLocation,
       options,
       actions: {
         showCursor,
@@ -74,85 +77,89 @@ const select = {
     function showCursor() {
       stdout.write("\x1B[?25h")
     }
-  }
-}
+  },
+  keyEvents: ({ listener, ChoseOptionEmitter, selectedOptionIdx, optionsInitialLocation, options, actions }) => {
+    const { showCursor } = actions
+  
+    const enter = async () => {
+      const { NEW_LINE } = constants
+      const selectedOption = options[selectedOptionIdx]
+  
+      stdin.off("data", listener)
+      stdin.setRawMode(false)
+      stdin.pause()
+      rdl.cursorTo(stdout, 0, optionsInitialLocation + options.length)
+      stdout.write(NEW_LINE)
+  
+      ChoseOptionEmitter.emit("event", selectedOption)
+    }
+  
+    const ctrlc = () => {
+      const { NEW_LINE } = constants
+  
+      stdin.off("data", listener)
+      stdin.setRawMode(false)
+      stdin.pause()
+      
+      stdout.write(NEW_LINE)
+      showCursor()
+    }
+  
+    const upArrow = async () => {
+      rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
+      stdout.write(new Item(options[selectedOptionIdx]).assemble().valueOf())
+  
+      if (selectedOptionIdx === 0) {
+        selectedOptionIdx = options.length - 1
+      } else {
+        selectedOptionIdx--
+      }
+  
+      rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
+      stdout.write(new Item(options[selectedOptionIdx]).assemble().highlight().valueOf())
+    }
+  
+    const downArrow = () => {
+      rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
+      stdout.write(new Item(options[selectedOptionIdx]).assemble().valueOf())
+  
+      if ((selectedOptionIdx + 1) === options.length) {
+        selectedOptionIdx = 0
+      } else {
+        selectedOptionIdx++
+      }
+  
+      rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
+      stdout.write(new Item(options[selectedOptionIdx]).assemble().highlight().valueOf())
+    }
+  
+    return {
+      enter,
+      ctrlc,
+      upArrow,
+      downArrow,
+    }
+  },
+  // from https://stackoverflow.com/questions/71246585/nodejs-readlines-cursor-behavior-and-position
+  getCursorPosition: () => new Promise((resolve) => {
+    const termcodes = { cursorGetPosition: '\u001b[6n' };
 
-function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, actions }) {
-  const { showCursor } = actions
+    stdin.setEncoding('utf8');
+    stdin.setRawMode(true);
 
-  const enter = async () => {
-    const { y } = cursorLocation
-    const { NEW_LINE } = constants
-    const selected = options[y - 1 - 3]
-
-    stdin.off("data", listener)
-    stdin.setRawMode(false)
-    stdin.pause()
-    rdl.cursorTo(stdout, 0, options.length + 4)
-    stdout.write(NEW_LINE)
-
-    ChoseOptionEmitter.emit("event", selected)
-  }
-
-  const ctrlc = () => {
-    const { NEW_LINE } = constants
-    stdout.write(NEW_LINE)
-
-    stdin.off("data", listener)
-    stdin.setRawMode(false)
-    stdin.pause()
-
-    showCursor()
-  }
-
-  const upArrow = () => {
-    let y = cursorLocation.y
-    rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(options[y - 1 - 3]).assemble().valueOf())
-
-    if (cursorLocation.y === 4) {
-      cursorLocation.y = options.length + 3
-    } else {
-      cursorLocation.y--
+    const readfx = function () {
+        const buf = stdin.read();
+        const str = JSON.stringify(buf); // "\u001b[9;1R"
+        const regex = /\[(.*)/g;
+        const xy = regex.exec(str)[0].replace(/\[|R"/g, '').split(';');
+        const pos = { rows: xy[0], cols: xy[1] };
+        stdin.setRawMode(false);
+        resolve(pos);
     }
 
-    y = cursorLocation.y
-    rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(options[y - 1 - 3]).assemble().highlight().valueOf())
-  }
-
-  const downArrow = () => {
-    let output
-    let y = cursorLocation.y
-    rdl.cursorTo(stdout, 0, y)
-
-    output = new Item(options[y - 1 - 3])
-      .assemble()
-      .valueOf()
-    stdout.write(output)
-
-    if (cursorLocation.y === (options.length + 3)) {
-      cursorLocation.y = 4
-    } else {
-      cursorLocation.y++
-    }
-
-    y = cursorLocation.y
-    rdl.cursorTo(stdout, 0, y)
-
-    output = new Item(options[y - 1 - 3])
-      .assemble()
-      .highlight()
-      .valueOf()
-    stdout.write(output)
-  }
-
-  return {
-    enter,
-    ctrlc,
-    upArrow,
-    downArrow,
-  }
+    stdin.once('readable', readfx);
+    stdout.write(termcodes.cursorGetPosition);
+  })
 }
 
 function Item(value, color = "yellow") {
