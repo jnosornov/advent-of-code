@@ -4,7 +4,13 @@ import constants from "./constants.js"
 
 const select = {
   init: ({ options = [], ChoseOptionEmitter }) => {
+    const { NEW_LINE } = constants
     let cursorLocation = { x: 0, y: 0 }
+
+    stdout.write(NEW_LINE)
+    stdout.write("Choose the challenge to be executed")
+    stdout.write(NEW_LINE)
+    stdout.write(NEW_LINE)
 
     for (let i = 0; i < options.length; i++) {
       const item = new Item(options[i])
@@ -24,7 +30,7 @@ const select = {
         stdout.write(output);
       }
 
-      cursorLocation.y = 1
+      cursorLocation.y = 4
     }
 
     stdin.setRawMode(true)
@@ -44,9 +50,7 @@ const select = {
       cursorLocation,
       options,
       actions: {
-        hideCursor,
         showCursor,
-        cleanUp
       }
     })
 
@@ -70,50 +74,51 @@ const select = {
     function showCursor() {
       stdout.write("\x1B[?25h")
     }
-
-    function cleanUp() {
-      // unicode to avoid octal literals not allowed in strict mode
-      stdout.write("\u033c")
-    }
   }
 }
 
 function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, actions }) {
-  const { showCursor, cleanUp } = actions;
+  const { showCursor } = actions
 
   const enter = async () => {
-    const selected = options[cursorLocation.y - 1]
+    const { y } = cursorLocation
+    const { NEW_LINE } = constants
+    const selected = options[y - 1 - 3]
 
     stdin.off("data", listener)
     stdin.setRawMode(false)
     stdin.pause()
-    cleanUp()
+    rdl.cursorTo(stdout, 0, options.length + 4)
+    stdout.write(NEW_LINE)
 
     ChoseOptionEmitter.emit("event", selected)
   }
 
   const ctrlc = () => {
+    const { NEW_LINE } = constants
+    stdout.write(NEW_LINE)
+
     stdin.off("data", listener)
     stdin.setRawMode(false)
     stdin.pause()
-    cleanUp()
+
     showCursor()
   }
 
   const upArrow = () => {
     let y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(options[y - 1]).assemble().valueOf())
+    stdout.write(new Item(options[y - 1 - 3]).assemble().valueOf())
 
-    if (cursorLocation.y === 1) {
-      cursorLocation.y = options.length
+    if (cursorLocation.y === 4) {
+      cursorLocation.y = options.length + 3
     } else {
       cursorLocation.y--
     }
 
     y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
-    stdout.write(new Item(options[y - 1]).assemble().highlight().valueOf())
+    stdout.write(new Item(options[y - 1 - 3]).assemble().highlight().valueOf())
   }
 
   const downArrow = () => {
@@ -121,13 +126,13 @@ function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, acti
     let y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
 
-    output = new Item(options[y - 1])
+    output = new Item(options[y - 1 - 3])
       .assemble()
       .valueOf()
     stdout.write(output)
 
-    if (cursorLocation.y === options.length) {
-      cursorLocation.y = 1
+    if (cursorLocation.y === (options.length + 3)) {
+      cursorLocation.y = 4
     } else {
       cursorLocation.y++
     }
@@ -135,7 +140,7 @@ function keyEvents({ listener, ChoseOptionEmitter, cursorLocation, options, acti
     y = cursorLocation.y
     rdl.cursorTo(stdout, 0, y)
 
-    output = new Item(options[y - 1])
+    output = new Item(options[y - 1 - 3])
       .assemble()
       .highlight()
       .valueOf()
