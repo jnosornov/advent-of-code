@@ -1,4 +1,4 @@
-[Day 18. Boiling boulders.](https://adventofcode.com/2022/day/18)
+[Day 18. Boiling Boulders.](https://adventofcode.com/2022/day/18)
 
 You and the elephants finally reach fresh air. You've emerged near the base
 of a large volcano that seems to be actively erupting! Fortunately, the
@@ -49,13 +49,16 @@ What is the surface area of your scanned lava droplet?
 -- Part Two --
 
 Something seems off about your calculation. The cooling rate depends on
-exterior surface area, but your calculation also included the surface area of the air pockets trapped in the lava dropplet.
+exterior surface area, but your calculation also included the surface area
+of the air pockets trapped in the lava dropplet.
 
 Instead, consider only cube sides that could be rached by the water and
 steam as the lava droplet tumbles into the pond. The steam will expand to
-reach as much as possible, completely displacing any air on the outside of the lava droplet bu tnever expanding diagonally.
+reach as much as possible, completely displacing any air on the outside of
+the lava droplet bu tnever expanding diagonally.
 
-In the larger example above, exactly one cube of air is trapped within the lava droplet (at 2,2,5), so the exterior surface area of the lava droplet
+In the larger example above, exactly one cube of air is trapped within the
+lava droplet (at 2,2,5), so the exterior surface area of the lava droplet
 is 58.
 
 What is te exterior surface area of your scanned lava droplet?

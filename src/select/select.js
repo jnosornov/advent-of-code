@@ -1,6 +1,7 @@
 import chalk from "chalk"
 import * as rdl from "node:readline"
-import { NEW_LINE, ITEM_POINTER } from "./constants.js"
+import { NEW_LINE, ITEM_POINTER } from "../constants.js"
+import getChallengeMarkdown from "./challenge-mkdown.js"
 
 const { stdin, stdout } = process
 
@@ -13,6 +14,8 @@ const select = {
 
     const selectedOptionIdx = 0
     let optionsInitialLocation = 0
+
+    const mkdown = await getChallengeMarkdown(options[selectedOptionIdx])
 
     stdout.write(NEW_LINE)
     stdout.write(chalk.bold("Choose the challenge to be executed"))
@@ -31,6 +34,10 @@ const select = {
         stdout.write(item)
       }
     }
+
+    stdout.write(NEW_LINE)
+    stdout.write(NEW_LINE)
+    stdout.write(mkdown)
 
     stdin.setRawMode(true)
     stdin.resume()

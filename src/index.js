@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process"
 import { EventEmitter } from "node:events"
 import { getDirectories } from "./helpers/file.js"
-import select from "./select.js"
+import select from "./select/select.js"
 
 (async function init() {
   const { NODE_ENV } = process.env
