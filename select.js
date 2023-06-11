@@ -1,10 +1,9 @@
 const { stdin, stdout } = process
 import * as rdl from "node:readline"
-import constants from "./constants.js"
+import { NEW_LINE, ITEM_POINTER, COLORS } from "./constants.js"
 
 const select = {
   init: async ({ options = [], ChoseOptionEmitter }) => {
-    const { NEW_LINE } = constants
     let selectedOptionIdx = 0
     let optionsInitialLocation = 0
 
@@ -82,7 +81,6 @@ const select = {
     const { showCursor } = actions
   
     const enter = async () => {
-      const { NEW_LINE } = constants
       const selectedOption = options[selectedOptionIdx]
   
       stdin.off("data", listener)
@@ -95,8 +93,6 @@ const select = {
     }
   
     const ctrlc = () => {
-      const { NEW_LINE } = constants
-  
       stdin.off("data", listener)
       stdin.setRawMode(false)
       stdin.pause()
@@ -166,14 +162,12 @@ function Item(value, color = "yellow") {
   let item = String(value)
 
   this.assemble = function() {
-    const { ITEM_POINTER, NEW_LINE } = constants
     item = `${ITEM_POINTER} ${value}${NEW_LINE}`
 
     return this
   }
 
   this.highlight = function() {
-    const { COLORS } = constants
     const _color = COLORS[color];
     const prefix = `${"\x1b["}${_color[0]}${"m"}`
     const suffix = `${"\x1b["}${_color[1]}${"m\x1b[0m"}`
