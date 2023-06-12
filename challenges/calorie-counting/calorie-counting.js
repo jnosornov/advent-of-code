@@ -15,13 +15,20 @@ export default async function init({ fruit }) {
   })
 
   const { input: elvesFoodInventory } = contents
-  const fruits = collectFruits({ fruit, callbacks: [fruitOne] })
+  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
 
-  const { fruit1 } = fruits
+  const { fruit1, fruit2 } = fruits
 
   // TODO: improve logger
   console.log("Calorie Counting")
-  console.log(`The Elf carrying the most calories is Elf ${fruit1.elf}, carrying ${fruit1.elfCalories} calories`)
+
+  if (fruit1) {
+    console.log(`The Elf carrying the most calories is Elf ${fruit1.elf}, carrying ${fruit1.elfCalories} calories`)
+  }
+
+  if (fruit2) {
+    console.log(`The top three elves calorie amount is ${fruit2.elvesCalorieAmount}`)
+  }
 
   return fruits
 
@@ -48,6 +55,63 @@ export default async function init({ fruit }) {
 
     return mostCalories
   }
+
+  function fruitTwo() {
+    let elfCalorieCounter = 0
+    let elvesFoodCalories = []
+
+    for (let i = 0; i < elvesFoodInventory.length; i++) {
+      const elfInventory = elvesFoodInventory[i]
+
+      for (let j = 0; j < elfInventory.length; j++) {
+        elfCalorieCounter = elfCalorieCounter + parseInt(elfInventory[j])
+      }
+
+      elvesFoodCalories.push({ elf: i, elfCalories: elfCalorieCounter })
+      elfCalorieCounter = 0
+    }
+
+    const sorted = quicksort(elvesFoodCalories)
+    return topThreeElves(sorted)
+
+    function topThreeElves(sorted) {
+      let elfCounter = 1
+      let elvesCalories = 0
+      let topThreeMostCalories = {}
+      const totalElves = 3
+      
+      for (let i = sorted.length - elfCounter; i >= sorted.length - totalElves; i--) {
+        topThreeMostCalories[elfCounter] = sorted[i]
+        elvesCalories += sorted[i].elfCalories
+        elfCounter++
+      }
+
+      topThreeMostCalories.elvesCalorieAmount = elvesCalories
+      return topThreeMostCalories
+    }
+
+    function quicksort(items) {
+      if (items.length <= 1) {
+        return items
+      }
+
+      let leftItems = []
+      let rightItems = []
+      let pivot = items[0]
+
+      for (let i = 1; i < items.length; i++) {
+        const curr = items[i]
+
+        if (curr.elfCalories < pivot.elfCalories) {
+          leftItems.push(curr)
+        } else {
+          rightItems.push(curr)
+        }
+      }
+
+      return [...quicksort(leftItems), pivot, ...quicksort(rightItems)]
+    }
+  }
 }
 
-run(() => init({ fruit: "1" }))
+run(() => init({ fruit: "both" }))

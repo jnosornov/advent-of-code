@@ -8,4 +8,11 @@ describe("Calorie Counting", () => {
 
     equal(fruit1.elfCalories, test)
   })
+
+  it("matches the top three elves calories amount", async () => {
+    const test = 45000
+    const { fruit2 } = await CalorieCounting({ fruit: "2" })
+
+    equal(fruit2.elvesCalorieAmount, test)
+  })
 })

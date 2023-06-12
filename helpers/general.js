@@ -9,19 +9,19 @@ function collectFruits({ fruit = "1", callbacks = [] }) {
   if (!callbacks.length) return
   const [cb1, cb2] = callbacks
 
-  if (fruit === "1") {
+  if (fruit === "1" && cb1) {
     return {
       fruit1: cb1()
     }
   }
 
-  if (fruit === "2") {
+  if (fruit === "2" && cb2) {
     return {
       fruit2: cb2()
     }
   }
 
-  if (fruit === "both") {
+  if (fruit === "both" && (cb1 && cb2)) {
     return {
       fruit1: cb1(),
       fruit2: cb2()
