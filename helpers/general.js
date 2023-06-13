@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { NEW_LINE, ITEM_POINTER } from "../constants.js";
+import { NEW_LINE, FRUIT_POINTER } from "../constants.js";
 
 function run(callback) {
   const { NODE_ENV } = process.env;
@@ -39,9 +39,9 @@ function logFruits({ title, fruitOne, fruitTwo }) {
   stdout.write(`${NEW_LINE}`)
   stdout.write(`${NEW_LINE}`)
 
-  stdout.write(`${ITEM_POINTER} ${fruitOne.message}`)
+  stdout.write(`${FRUIT_POINTER} ${fruitOne.message}`)
   stdout.write(`${NEW_LINE}`)
-  stdout.write(`${ITEM_POINTER} ${fruitTwo.message}`)
+  stdout.write(`${FRUIT_POINTER} ${fruitTwo.message}`)
   stdout.write(`${NEW_LINE}`)
   stdout.write(`${NEW_LINE}`)
 }

@@ -1,4 +1,5 @@
 import chalk from "chalk"
+import numeral from "numeral"
 import { run, collectFruits, logFruits } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
@@ -22,10 +23,10 @@ export default async function init({ fruit }) {
   logFruits({
     title: "Calorie Counting",
     fruitOne: {
-      message: `the most calories carried by an Elf is ${chalk.yellow(fruit1.elfCalories)} calories`
+      message: `the most calories carried by an Elf is ${chalk.yellow(numeral(fruit1.elfCalories).format('0,0'))} calories`
     },
     fruitTwo: {
-      message: `the total calories carried by the top three Elves is ${chalk.yellow(fruit2.elvesCalorieAmount)} calories`
+      message: `the total calories carried by the top three Elves is ${chalk.yellow(numeral(fruit2.elvesCalorieAmount).format('0,0'))} calories`
     }
   })
 

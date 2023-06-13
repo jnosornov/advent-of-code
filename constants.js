@@ -1,9 +1,9 @@
 const NEW_LINE = "\n"
 const ITEM_POINTER = "⦿"
-const FRUIT = "🍇"
+const FRUIT_POINTER = "»"
 
 export {
   NEW_LINE,
   ITEM_POINTER,
-  FRUIT
+  FRUIT_POINTER
 }
