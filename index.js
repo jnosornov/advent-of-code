@@ -8,16 +8,7 @@ import select from "./select.js"
 
   ChoseOptionEmitter.on("event", function listener(chosenOption) {
     const id = chosenOption.replaceAll(" ", "-");
-    const child = spawn("nodemon", [`challenges/${id}/${id}.js`], { shell: true })
-
-    child.stdout.on("data", (data) => {
-      process.stdout.write(data);
-    })
-
-    child.stderr.on("data", (data) => {
-      console.log("failed");
-      process.stdout.write(data)
-    })
+    spawn("node", [`challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
   });
 
   const folders = await getDirectories(`${process.cwd()}/challenges`);

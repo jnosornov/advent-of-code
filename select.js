@@ -1,6 +1,7 @@
 const { stdin, stdout } = process
+import chalk from "chalk"
 import * as rdl from "node:readline"
-import { NEW_LINE, ITEM_POINTER, COLORS } from "./constants.js"
+import { NEW_LINE, ITEM_POINTER } from "./constants.js"
 
 const select = {
   init: async ({ options = [], ChoseOptionEmitter }) => {
@@ -8,7 +9,7 @@ const select = {
     let optionsInitialLocation = 0
 
     stdout.write(NEW_LINE)
-    stdout.write("Choose the challenge to be executed")
+    stdout.write(chalk.bold("Choose the challenge to be executed"))
     stdout.write(NEW_LINE)
     stdout.write(NEW_LINE)
 
@@ -16,21 +17,12 @@ const select = {
     optionsInitialLocation = rows - 1
 
     for (let i = 0; i < options.length; i++) {
-      const item = new Item(options[i])
+      const item = `${ITEM_POINTER} ${options[i]}${NEW_LINE}`
 
       if (i === 0) {
-        const output = item
-          .assemble()
-          .highlight()
-          .valueOf()
-
-        stdout.write(output)
+        stdout.write(chalk.yellow(item))
       } else {
-        const output = item
-          .assemble()
-          .valueOf()
-        
-        stdout.write(output);
+        stdout.write(item);
       }
     }
 
@@ -102,8 +94,11 @@ const select = {
     }
   
     const upArrow = async () => {
+      let item
+
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      stdout.write(new Item(options[selectedOptionIdx]).assemble().valueOf())
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      stdout.write(item)
   
       if (selectedOptionIdx === 0) {
         selectedOptionIdx = options.length - 1
@@ -112,12 +107,16 @@ const select = {
       }
   
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      stdout.write(new Item(options[selectedOptionIdx]).assemble().highlight().valueOf())
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      stdout.write(chalk.yellow(item))
     }
   
     const downArrow = () => {
+      let item
+
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      stdout.write(new Item(options[selectedOptionIdx]).assemble().valueOf())
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      stdout.write(item)
   
       if ((selectedOptionIdx + 1) === options.length) {
         selectedOptionIdx = 0
@@ -126,7 +125,8 @@ const select = {
       }
   
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      stdout.write(new Item(options[selectedOptionIdx]).assemble().highlight().valueOf())
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      stdout.write(chalk.yellow(item))
     }
   
     return {
@@ -156,29 +156,6 @@ const select = {
     stdin.once('readable', readfx);
     stdout.write(termcodes.cursorGetPosition);
   })
-}
-
-function Item(value, color = "yellow") {
-  let item = String(value)
-
-  this.assemble = function() {
-    item = `${ITEM_POINTER} ${value}${NEW_LINE}`
-
-    return this
-  }
-
-  this.highlight = function() {
-    const _color = COLORS[color];
-    const prefix = `${"\x1b["}${_color[0]}${"m"}`
-    const suffix = `${"\x1b["}${_color[1]}${"m\x1b[0m"}`
-  
-    item = `${prefix}${item}${suffix}`
-    return this
-  }
-
-  this.valueOf = function() {
-    return item
-  }
 }
 
 export default select

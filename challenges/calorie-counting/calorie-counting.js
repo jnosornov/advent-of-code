@@ -1,4 +1,5 @@
-import { run, collectFruits } from "../../helpers/general.js"
+import chalk from "chalk"
+import { run, collectFruits, logFruits } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
@@ -16,19 +17,17 @@ export default async function init({ fruit }) {
 
   const { input: elvesFoodInventory } = contents
   const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
-
   const { fruit1, fruit2 } = fruits
 
-  // TODO: improve logger
-  console.log("Calorie Counting")
-
-  if (fruit1) {
-    console.log(`The Elf carrying the most calories is Elf ${fruit1.elf}, carrying ${fruit1.elfCalories} calories`)
-  }
-
-  if (fruit2) {
-    console.log(`The top three elves calorie amount is ${fruit2.elvesCalorieAmount}`)
-  }
+  logFruits({
+    title: "Calorie Counting",
+    fruitOne: {
+      message: `the most calories carried by an Elf is ${chalk.yellow(fruit1.elfCalories)} calories`
+    },
+    fruitTwo: {
+      message: `the total calories carried by the top three Elves is ${chalk.yellow(fruit2.elvesCalorieAmount)} calories`
+    }
+  })
 
   return fruits
 
