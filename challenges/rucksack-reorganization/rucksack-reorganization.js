@@ -1,5 +1,5 @@
 import { getFileContent } from "../../helpers/file.js"
-import run from "../../helpers/run.js"
+import { run } from "../../helpers/general.js"
 
 const getRuckSackSharedItem = (rucksack) => {
   // maps rucksack first compartment item types
