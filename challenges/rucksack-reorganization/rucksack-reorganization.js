@@ -1,5 +1,7 @@
+import chalk from "chalk"
+import numeral from "numeral"
 import { getFileContent } from "../../helpers/file.js"
-import { run } from "../../helpers/general.js"
+import { collectFruits, logFruits, run } from "../../helpers/general.js"
 
 const getRuckSackSharedItem = (rucksack) => {
   // maps rucksack first compartment item types
@@ -82,25 +84,31 @@ const getGroupBadge = (rucksacks) => {
   }
 }
 
-async function init(filename = "./input.txt", challenge = "firstHalf" ) {
-  const opts = (entry) => entry.split("\n")
+export default async function init({ fruit }) {
+  const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
   const contents = await getFileContent({
     path: new URL(filename, import.meta.url),
-    opts,
+    opts: (entry) => entry.split("\n"),
   })
 
   const { input: rucksacks } = contents
+  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
+  const { fruit1, fruit2 } = fruits
 
-  if (challenge === "firstHalf") {
-    const result = starOne()
-    return result
-  } else if (challenge === "secondHalf") {
-    const result = starTwo()
-    return result
-  }
+  logFruits({
+    title: "Rucksack Reorganization",
+    fruitOne: {
+      message: fruit1 ? `the comparments' shared item priority sum is ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
+    },
+    fruitTwo: {
+      message: fruit2 ? `the badges' priority sum is ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
+    }
+  })
 
-  function starOne() {
+  return fruits
+
+  function fruitOne() {
     let prioritySum = 0
     for (let i = 0; i < rucksacks.length; i++) {
       const rucksack = rucksacks[i]
@@ -110,11 +118,10 @@ async function init(filename = "./input.txt", challenge = "firstHalf" ) {
       prioritySum = prioritySum + arrangementPriority
     }
 
-    console.log("Priority Sum:", prioritySum)
     return prioritySum
   }
 
-  function starTwo() {
+  function fruitTwo() {
     let prioritySum = 0
     for (let i = 0; i < rucksacks.length; i++) {
       const isElvesGroup = ((i + 1) % 3) === 0
@@ -126,16 +133,14 @@ async function init(filename = "./input.txt", challenge = "firstHalf" ) {
       prioritySum = prioritySum + arrangementPriority
     }
   
-    console.log("Priority Sum:", prioritySum)
     return prioritySum
   }
 }
 
-run(init);
+run(() => init({ fruit: "both" }));
 
 export {
   getRuckSackSharedItem,
   getArrangementPriority,
   getGroupBadge,
-  init as default,
 }
