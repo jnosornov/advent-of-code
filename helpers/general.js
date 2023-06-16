@@ -33,17 +33,11 @@ function collectFruits({ fruit = "1", callbacks = [] }) {
 }
 
 function logFruits({ title, fruitOne, fruitTwo }) {
-  const { stdout } = process
+  console.log(chalk.bold(title))
+  console.log("\r")
 
-  stdout.write(chalk.bold(title))
-  stdout.write(`${NEW_LINE}`)
-  stdout.write(`${NEW_LINE}`)
-
-  stdout.write(`${FRUIT_POINTER} ${fruitOne.message}`)
-  stdout.write(`${NEW_LINE}`)
-  stdout.write(`${FRUIT_POINTER} ${fruitTwo.message}`)
-  stdout.write(`${NEW_LINE}`)
-  stdout.write(`${NEW_LINE}`)
+  console.log(`${FRUIT_POINTER} ${fruitOne?.message}`)
+  console.log(`${FRUIT_POINTER} ${fruitTwo?.message}`)
 }
 
 export {

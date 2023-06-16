@@ -23,10 +23,10 @@ export default async function init({ fruit }) {
   logFruits({
     title: "Calorie Counting",
     fruitOne: {
-      message: `the most calories carried by an Elf is ${chalk.yellow(numeral(fruit1.elfCalories).format('0,0'))} calories`
+      message: fruit1 ? `the most calories carried by an Elf is ${chalk.yellow(numeral(fruit1.elfCalories).format('0,0'))} calories` : undefined
     },
     fruitTwo: {
-      message: `the total calories carried by the top three Elves is ${chalk.yellow(numeral(fruit2.elvesCalorieAmount).format('0,0'))} calories`
+      message: fruit2 ? `the total calories carried by the top three Elves is ${chalk.yellow(numeral(fruit2.elvesCalorieAmount).format('0,0'))} calories` : undefined
     }
   })
 
