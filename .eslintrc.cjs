@@ -3,23 +3,25 @@ module.exports = {
     es2021: true,
     node: true
   },
-  extends: 'standard',
+  extends: "standard",
   overrides: [
     {
       env: {
         node: true
       },
       files: [
-        '.eslintrc.{js,cjs}'
+        ".eslintrc.{js,cjs}"
       ],
       parserOptions: {
-        sourceType: 'script'
+        sourceType: "script"
       }
     }
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+    ecmaVersion: "latest",
+    sourceType: "module"
   },
-  rules: {}
+  rules: {
+    quotes: [2, "double"]
+  }
 }
