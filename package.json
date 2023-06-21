@@ -5,11 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "lint": "eslint ./*.js",
     "dev": "node index.js",
-    "debug": "nodemon inspect hill-climbing-algorithm.js",
+    "start": "NODE_ENV=prod node index.js",
     "test": "NODE_ENV=test mocha \"./challenges/**/*.test.js\" --require mocha-suppress-logs",
-    "test:watch": "NODE_ENV=test mocha \"./challenges/**/*.test.js\" --watch --parallel --require mocha-suppress-logs",
-    "lint": "eslint ./*.js"
+    "test:watch": "NODE_ENV=test mocha \"./challenges/**/*.test.js\" --watch --parallel --require mocha-suppress-logs"
   },
   "author": "Johnathan Osorno Valencia",
   "license": "ISC",

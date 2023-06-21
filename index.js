@@ -4,11 +4,13 @@ import { getDirectories } from "./helpers/file.js"
 import select from "./select.js"
 
 (async function init () {
+  const { NODE_ENV } = process.env
   const ChoseOptionEmitter = new EventEmitter()
 
   ChoseOptionEmitter.on("event", function listener (chosenOption) {
     const id = chosenOption.replaceAll(" ", "-")
-    spawn("nodemon", [`challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
+    const command = NODE_ENV === "prod" ? "node" : "nodemon"
+    spawn(command, [`challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
   })
 
   const folders = await getDirectories(`${process.cwd()}/challenges`)
