@@ -1,14 +1,14 @@
-import chalk from "chalk";
-import { NEW_LINE, FRUIT_POINTER } from "../constants.js";
+import chalk from "chalk"
+import { FRUIT_POINTER } from "../constants.js"
 
-function run(callback) {
-  const { NODE_ENV } = process.env;
+function run (callback) {
+  const { NODE_ENV } = process.env
 
-  if (NODE_ENV === "test") return;
-  callback();
+  if (NODE_ENV === "test") return
+  callback()
 }
 
-function collectFruits({ fruit = "1", callbacks = [] }) {
+function collectFruits ({ fruit = "1", callbacks = [] }) {
   if (!callbacks.length) return
   const [cb1, cb2] = callbacks
 
@@ -32,7 +32,7 @@ function collectFruits({ fruit = "1", callbacks = [] }) {
   }
 }
 
-function logFruits({ title, fruitOne, fruitTwo }) {
+function logFruits ({ title, fruitOne, fruitTwo }) {
   console.log(chalk.bold(title))
   console.log("\r")
 

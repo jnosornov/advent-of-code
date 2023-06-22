@@ -1,6 +1,7 @@
 import { equal } from "assert"
 import RucksackReorganization,
-{ getRuckSackSharedItem,
+{
+  getRuckSackSharedItem,
   getArrangementPriority,
   getGroupBadge
 } from "./rucksack-reorganization.js"
@@ -10,42 +11,42 @@ describe("Rucksack Reorganization", () => {
     it("for the 1st rucksack", () => {
       const test = "p"
       const sharedItem = getRuckSackSharedItem("vJrwpWtwJgWrhcsFMMfFFhFp")
-  
+
       equal(sharedItem, test)
     })
-  
+
     it("for the 2nd rucksack", () => {
       const test = "L"
       const sharedItem = getRuckSackSharedItem("jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL")
-  
+
       equal(sharedItem, test)
     })
-    
+
     it("for the 3rd rucksack", () => {
       const test = "P"
       const sharedItem = getRuckSackSharedItem("PmmdzqPrVvPwwTWBwg")
-  
+
       equal(sharedItem, test)
     })
-  
+
     it("for the 4th rucksack", () => {
       const test = "v"
       const sharedItem = getRuckSackSharedItem("wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn")
-  
+
       equal(sharedItem, test)
     })
-  
+
     it("for the 5th rucksack", () => {
       const test = "t"
       const sharedItem = getRuckSackSharedItem("ttgJtRGJQctTZtZT")
-  
+
       equal(sharedItem, test)
     })
-  
+
     it("for the 6th rucksack", () => {
       const test = "s"
       const sharedItem = getRuckSackSharedItem("CrZsJsPPZsGzwwsLwLmpwMDw")
-  
+
       equal(sharedItem, test)
     })
   })
@@ -104,19 +105,18 @@ describe("Rucksack Reorganization", () => {
     })
   })
 
-
   describe("matches the rucksacks priority sum", () => {
     it("when the item type shared between compartments is found", async () => {
       const test = 157
       const { fruit1 } = await RucksackReorganization({ fruit: "1" })
-  
+
       equal(fruit1, test)
     })
 
     it("when the Elves group badge item type is found", async () => {
       const test = 70
       const { fruit2 } = await RucksackReorganization({ fruit: "2" })
-  
+
       equal(fruit2, test)
     })
   })

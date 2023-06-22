@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "lint": "eslint ./*.js",
-    "dev": "node index.js",
-    "start": "NODE_ENV=prod node index.js",
+    "lint": "eslint src",
+    "dev": "node src/index.js",
+    "start": "NODE_ENV=prod node src/index.js",
     "test": "NODE_ENV=test mocha \"./challenges/**/*.test.js\" --require mocha-suppress-logs",
     "test:watch": "NODE_ENV=test mocha \"./challenges/**/*.test.js\" --watch --parallel --require mocha-suppress-logs"
   },

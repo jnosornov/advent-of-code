@@ -10,10 +10,11 @@ import select from "./select.js"
   ChoseOptionEmitter.on("event", function listener (chosenOption) {
     const id = chosenOption.replaceAll(" ", "-")
     const command = NODE_ENV === "prod" ? "node" : "nodemon"
-    spawn(command, [`challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
+    spawn(command, [`src/challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
   })
 
-  const folders = await getDirectories(`${process.cwd()}/challenges`)
+  // TODO: improve by track/catching
+  const folders = await getDirectories(`${process.cwd()}/src/challenges`)
   const options = folders.map(folder => folder.replaceAll("-", " "))
 
   select.init({ options, ChoseOptionEmitter })
