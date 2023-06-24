@@ -11,32 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
-      - name: install asdf
-        run: |
-          sudo apt-get install -y curl git
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
-          cat << EOF > ~/.bashrc
-          # Runtime Version Manager
-          . $HOME/.asdf/asdf.sh
-          . $HOME/.asdf/completions/asdf.bash
-          EOF
-          cat << EOF > ~/.profile
-          if [ -d "$HOME/bin" ] ; then
-          PATH=$PATH:$HOME/.asdf/bin/asdf
-          fi
-          source ~/.bashrc
-          EOF
-          echo $PATH
-          cd
-          cd .asdf
-          ls -la
-      - run: cat ~/.profile
-      - run: cat ~/.bashrc
-      - run: asdf --version
       - name: checkout repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: install tool versions
-        run: asdf install
+      - name: runtime version manager
+        uses: asdf-vm/actions/install@v2
       
