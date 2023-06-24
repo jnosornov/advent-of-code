@@ -21,3 +21,7 @@ jobs:
         run: yarn install
       - name: code linting
         run: yarn lint
+      - name: build
+        run: yarn start
+      - name: test
+        run: yarn test

@@ -6,6 +6,11 @@ const { stdin, stdout } = process
 
 const select = {
   init: async ({ options = [], ChoseOptionEmitter }) => {
+    if (!stdin.isTTY) {
+      // setRawMode fails when deploy
+      return
+    }
+
     const selectedOptionIdx = 0
     let optionsInitialLocation = 0
 
