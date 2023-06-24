@@ -22,3 +22,4 @@ jobs:
         run: yarn install
       - name: code linting
         run: yarn lint
+      - run: asdf list nodejs
