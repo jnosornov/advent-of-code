@@ -56,8 +56,6 @@ function getDropletsSurfaceArea (droplets) {
 
   for (let i = 0; i < mightBeDroplet.length; i++) {
     const droplet = mightBeDroplet[i]
-    // TODO: have a look at this eslint rule
-    // eslint-disable-next-line no-prototype-builtins
     if (!map.hasOwnProperty(droplet)) continue
 
     map[droplet] += 1
