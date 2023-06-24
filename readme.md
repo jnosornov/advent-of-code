@@ -1,0 +1,1 @@
+[![Deployment Pipeline](https://github.com/jnosornov/advent-of-code/actions/workflows/pipeline.yml/badge.svg)](https://github.com/jnosornov/advent-of-code/actions/workflows/pipeline.yml)
