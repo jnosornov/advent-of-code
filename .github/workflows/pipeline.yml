@@ -17,4 +17,8 @@ jobs:
           fetch-depth: 0
       - name: runtime version manager
         uses: asdf-vm/actions/install@v2
-      
+      - run: ls -l
+      - name: install dependencies
+        run: yarn install
+      - name: code linting
+        run: yarn lint
