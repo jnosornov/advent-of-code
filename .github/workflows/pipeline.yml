@@ -7,21 +7,31 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  deploy:
+  lint:
     runs-on: ubuntu-20.04
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: runtime version manager
-        uses: asdf-vm/actions/install@v2
+      - uses: asdf-vm/actions/install@v2
       - name: install dependencies
         run: yarn install
       - name: code linting
         run: yarn lint
-      - name: build
-        run: yarn start
+
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: asdf-vm/actions/install@v2
+      - name: install dependencies
+        run: yarn install
       - name: test
         run: yarn test
