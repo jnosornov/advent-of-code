@@ -4,16 +4,16 @@ import { run, collectFruits, logFruits } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
-export default async function init({ fruit }) {
+export default async function init ({ fruit }) {
   // TODO: move within getFileContent
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
-  const contents =  await getFileContent({
+  const contents = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
       const n = entry.split(`${NEW_LINE}${NEW_LINE}`)
       return n.map(el => el.split(`${NEW_LINE}`))
-    },
+    }
   })
 
   const { input: elvesFoodInventory } = contents
@@ -23,18 +23,18 @@ export default async function init({ fruit }) {
   logFruits({
     title: "Calorie Counting",
     fruitOne: {
-      message: fruit1 ? `the most calories carried by an Elf is ${chalk.yellow(numeral(fruit1.elfCalories).format('0,0'))} calories` : null
+      message: fruit1 ? `the most calories carried by an Elf is ${chalk.yellow(numeral(fruit1.elfCalories).format("0,0"))} calories` : null
     },
     fruitTwo: {
-      message: fruit2 ? `the total calories carried by the top three Elves is ${chalk.yellow(numeral(fruit2.elvesCalorieAmount).format('0,0'))} calories` : null
+      message: fruit2 ? `the total calories carried by the top three Elves is ${chalk.yellow(numeral(fruit2.elvesCalorieAmount).format("0,0"))} calories` : null
     }
   })
 
   return fruits
 
-  function fruitOne() {
+  function fruitOne () {
     let elfCalorieCounter = 0
-    let mostCalories = { elf: null, elfCalories: null }
+    const mostCalories = { elf: null, elfCalories: null }
 
     for (let i = 0; i < elvesFoodInventory.length; i++) {
       const elfInventory = elvesFoodInventory[i]
@@ -45,7 +45,7 @@ export default async function init({ fruit }) {
 
       const { elf, elfCalories } = mostCalories
 
-      if(!elf || (elfCalories < elfCalorieCounter)) {
+      if (!elf || (elfCalories < elfCalorieCounter)) {
         mostCalories.elf = i
         mostCalories.elfCalories = elfCalorieCounter
       }
@@ -56,9 +56,9 @@ export default async function init({ fruit }) {
     return mostCalories
   }
 
-  function fruitTwo() {
+  function fruitTwo () {
     let elfCalorieCounter = 0
-    let elvesFoodCalories = []
+    const elvesFoodCalories = []
 
     for (let i = 0; i < elvesFoodInventory.length; i++) {
       const elfInventory = elvesFoodInventory[i]
@@ -74,12 +74,12 @@ export default async function init({ fruit }) {
     const sorted = quicksort(elvesFoodCalories)
     return topThreeElves(sorted)
 
-    function topThreeElves(sorted) {
+    function topThreeElves (sorted) {
       let elfCounter = 1
       let elvesCalories = 0
-      let topThreeMostCalories = {}
+      const topThreeMostCalories = {}
       const totalElves = 3
-      
+
       for (let i = sorted.length - elfCounter; i >= sorted.length - totalElves; i--) {
         topThreeMostCalories[elfCounter] = sorted[i]
         elvesCalories += sorted[i].elfCalories
@@ -90,14 +90,14 @@ export default async function init({ fruit }) {
       return topThreeMostCalories
     }
 
-    function quicksort(items) {
+    function quicksort (items) {
       if (items.length <= 1) {
         return items
       }
 
-      let leftItems = []
-      let rightItems = []
-      let pivot = items[0]
+      const leftItems = []
+      const rightItems = []
+      const pivot = items[0]
 
       for (let i = 1; i < items.length; i++) {
         const curr = items[i]
