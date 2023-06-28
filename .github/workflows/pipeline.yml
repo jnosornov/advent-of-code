@@ -35,3 +35,11 @@ jobs:
         run: yarn install
       - name: test
         run: yarn test
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: [lint, test]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: deploy to Render
+        run: curl ${{secrets.RENDER_HOOK}}
