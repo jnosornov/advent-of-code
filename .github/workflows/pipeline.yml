@@ -37,6 +37,7 @@ jobs:
         run: yarn test
 
   deploy:
+    if: github.event_name == 'push'
     needs: [lint, test]
     runs-on: ubuntu-20.04
     steps:
