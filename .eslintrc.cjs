@@ -23,6 +23,8 @@ module.exports = {
     sourceType: "module"
   },
   rules: {
-    quotes: [2, "double"]
+    quotes: [2, "double"],
+    "func-call-spacing": "off",
+    "no-unexpected-multiline": "off"
   }
 }

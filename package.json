@@ -2,7 +2,8 @@
   "name": "advent-of-code",
   "version": "1.0.0",
   "description": "project to solve advent of code algorithm challenges",
-  "main": "index.js",
+  "main": "server.js",
+  "private": true,
   "type": "module",
   "scripts": {
     "lint": "eslint src",
