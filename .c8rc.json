@@ -1,0 +1,10 @@
+{
+  "skipFull": false,
+  "checkCoverage": true,
+  "branches": 70,
+  "functions": 70,
+  "lines": 70,
+  "statements": 60,
+  "src": ["src"],
+  "all": true
+}

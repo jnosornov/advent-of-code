@@ -1,7 +1,7 @@
 {
   "name": "advent-of-code",
   "version": "1.0.0",
-  "description": "project to solve advent of code algorithm challenges",
+  "description": "solves advent of code challenges",
   "main": "server.js",
   "private": true,
   "type": "module",
@@ -10,12 +10,14 @@
     "dev:server": "nodemon src/server.js",
     "dev:challenges": "node src/index.js",
     "start": "node src/server.js",
-    "test": "NODE_ENV=test mocha \"./src/challenges/**/*.test.js\" --require mocha-suppress-logs",
-    "test:watch": "NODE_ENV=test mocha \"./src/challenges/**/*.test.js\" --watch --parallel --require mocha-suppress-logs"
+    "test": "NODE_ENV=test mocha \"./src/**/*.test.js\" --require mocha-suppress-logs",
+    "test:watch": "yarn test --watch --parallel",
+    "coverage": "NODE_ENV=test c8 mocha \"./src/**/*.test.js\" --require mocha-suppress-logs"
   },
   "author": "Johnathan Osorno Valencia",
   "license": "ISC",
   "devDependencies": {
+    "c8": "^8.0.0",
     "eslint": "^8.0.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.25.2",
