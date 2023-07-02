@@ -35,11 +35,21 @@ jobs:
         run: yarn install
       - name: test
         run: yarn test
-
-  deploy:
-    if: github.event_name == 'push'
+  
+  security:
     needs: [lint, test]
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@master
+      - name: check vulnerabilities with sync
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: [lint, test, security]
+    runs-on: ubuntu-20.04
+    steps:
       - name: deploy to Render
-        run: curl ${{secrets.RENDER_HOOK}}
+        run: curl ${{ secrets.RENDER_HOOK }}
