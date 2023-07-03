@@ -12,6 +12,32 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  security:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: check vulnerabilities with sync
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  coverage:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: asdf-vm/actions/install@v2
+      - name: install dependencies
+        run: yarn install
+      - name: generate coverage report
+        run: yarn coverage
+        continue-on-error: true
+      - name: upload coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          flags: unittests
+
   lint:
     runs-on: ubuntu-20.04
     steps:
@@ -26,6 +52,7 @@ jobs:
 
   test:
     runs-on: ubuntu-20.04
+    needs: [lint]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,8 +65,8 @@ jobs:
 
   deploy:
     if: github.event_name == 'push'
-    needs: [lint, test]
+    needs: [lint, test, security]
     runs-on: ubuntu-20.04
     steps:
       - name: deploy to Render
-        run: curl ${{secrets.RENDER_HOOK}}
+        run: curl ${{ secrets.RENDER_HOOK }}
