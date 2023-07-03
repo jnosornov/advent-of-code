@@ -15,7 +15,7 @@ jobs:
   security:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - name: check vulnerabilities with sync
         uses: snyk/actions/node@master
         env:
