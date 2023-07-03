@@ -7,5 +7,5 @@
   "statements": 60,
   "src": ["src"],
   "all": true,
-  "reporter": ["text", "text-summary"]
+  "reporter": ["text", "text-summary", "lcov"]
 }
