@@ -35,8 +35,6 @@ jobs:
         continue-on-error: true
       - name: coverage report
         uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-20.04
