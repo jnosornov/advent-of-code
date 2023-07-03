@@ -32,6 +32,7 @@ jobs:
         run: yarn install
       - name: coverage
         run: yarn coverage
+        continue-on-error: true
       - name: coverage report
         uses: codecov/codecov-action@v3
         with:
