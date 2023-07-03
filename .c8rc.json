@@ -6,5 +6,6 @@
   "lines": 70,
   "statements": 60,
   "src": ["src"],
-  "all": true
+  "all": true,
+  "reporter": ["text", "text-summary"]
 }

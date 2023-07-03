@@ -21,6 +21,15 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+  coverage:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@master
+      - name: coverage report
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   lint:
     runs-on: ubuntu-20.04
     steps:
