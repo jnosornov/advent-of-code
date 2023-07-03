@@ -30,10 +30,10 @@ jobs:
       - uses: asdf-vm/actions/install@v2
       - name: install dependencies
         run: yarn install
-      - name: coverage
+      - name: generate coverage report
         run: yarn coverage
         continue-on-error: true
-      - name: coverage report
+      - name: upload coverage report
         uses: codecov/codecov-action@v3
 
   lint:
