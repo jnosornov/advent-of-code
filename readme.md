@@ -12,7 +12,6 @@ Current project solves advent of [code algorithms challenges](https://adventofco
 - [scripts](#scripts)
 
 <hr>
-<br>
 
 #### **Testing**
 
@@ -20,15 +19,12 @@ The project has [mocha](https://mochajs.org/) set up for testing the application
 
 For checking test coverage the project uses [c8](https://github.com/bcoe/c8), it is used to generate the report that is later upload to [Codecov](https://about.codecov.io/).
 
-<br>
-
 #### **Githbu Actions**
 
 Continuous integrations and deployment is done by using github actions, the workflow currently have steps for the linter, the tests, check code vulnerabilities, report code coverage, and deploy the code. Checkout the [Github actions workflow](https://github.com/jnosornov/advent-of-code/blob/main/.github/workflows/pipeline.yml) for details.
 
 In order for some of the workflow steps to work there are some integrations done with github. For the security step, an integration was set with [Snyk](https://snyk.io/), for the coverage step, an integration was set with [Codecov](https://about.codecov.io/), and for the deploy step, and integration was set with [render](https://render.com/).
 
-<br>
 
 #### **Static Code Analysis**
 
