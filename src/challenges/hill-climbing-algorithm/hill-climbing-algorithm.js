@@ -146,16 +146,16 @@ const aStar = {
 }
 
 class PriorityQueue {
-  constructor () {
+  constructor() {
     this.items = []
   }
 
-  push (item) {
+  push(item) {
     this.items.push(item)
     this.bubbleUp()
   }
 
-  bubbleUp () {
+  bubbleUp() {
     let idx = this.items.length - 1
     const element = this.items[idx]
 
@@ -172,7 +172,7 @@ class PriorityQueue {
     }
   }
 
-  pop () {
+  pop() {
     const max = this.items[0]
     const end = this.items.pop()
 
@@ -184,7 +184,7 @@ class PriorityQueue {
     return max
   }
 
-  sinkDown () {
+  sinkDown() {
     let idx = 0
     const length = this.items.length
     const element = this.items[0]
@@ -217,18 +217,18 @@ class PriorityQueue {
     }
   }
 
-  rescore (item) {
+  rescore(item) {
     // eslint-disable-next-line no-unused-vars
     const elementIdx = this.items.findIndex((el) => el.x === item.x && el.y === item.y)
   }
 
-  size () {
+  size() {
     return this.items.length
   }
 }
 
 // set 2d array to represent grid
-function setHeighmap (puzzleInput) {
+function setHeighmap(puzzleInput) {
   let start
   let goal
   const grid = []
@@ -257,7 +257,7 @@ function setHeighmap (puzzleInput) {
   return { start, goal, grid }
 }
 
-(async function init () {
+(async function init() {
   const contents = await getFileContent({
     path: new URL("./puzzle-input.txt", import.meta.url)
   }).catch((error) => console.log(error))

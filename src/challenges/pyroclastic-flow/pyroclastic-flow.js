@@ -31,7 +31,7 @@ const ROCKS = [
 ]
 
 class RockFallingSimulation {
-  constructor ({ rocksToFall, jetPattern }) {
+  constructor({ rocksToFall, jetPattern }) {
     this.fallingRock = null
     this.grid = []
     this.patternPosition = 0
@@ -40,7 +40,7 @@ class RockFallingSimulation {
     this.rocksToFall = rocksToFall
   }
 
-  run () {
+  run() {
     let rockCounter = 0
 
     while (rockCounter + 1 <= this.rocksToFall) {
@@ -60,7 +60,7 @@ class RockFallingSimulation {
     console.log("number of rocks", rockCounter - 1)
   }
 
-  collision (x, y) {
+  collision(x, y) {
     const xDiff = this.fallingRock.x - x
     const yDiff = this.fallingRock.y - y
     const shape = this.fallingRock.shape
@@ -103,7 +103,7 @@ class RockFallingSimulation {
     return false
   }
 
-  moveRock () {
+  moveRock() {
     if (this.fallingRock === null) return
 
     const moveSequence = () => {
@@ -158,7 +158,7 @@ class RockFallingSimulation {
     moveSequence()
   }
 
-  renderGrid () {
+  renderGrid() {
     let row = ""
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
@@ -173,14 +173,14 @@ class RockFallingSimulation {
 }
 
 class Rock {
-  constructor (shape) {
+  constructor(shape) {
     this.shape = shape
     this.x = 0
     this.y = 2
     this.isFalling = false
   }
 
-  clear (grid) {
+  clear(grid) {
     this.shape.map((row, i) => {
       row.map((cell, j) => {
         if (cell > 0) {
@@ -190,7 +190,7 @@ class Rock {
     })
   }
 
-  render (grid) {
+  render(grid) {
     if (this.isFalling) {
       this.shape.map((row, i) => {
         row.map((cell, j) => {
@@ -226,7 +226,7 @@ class Rock {
   }
 }
 
-(async function main () {
+(async function main() {
   const contents = await getFileContent({
     path: new URL("./puzzle-input.txt", import.meta.url)
   }).catch((error) => console.log(error))

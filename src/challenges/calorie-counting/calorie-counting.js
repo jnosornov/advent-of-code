@@ -4,7 +4,7 @@ import { run, collectFruits, logFruits } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
-export default async function init ({ fruit }) {
+export default async function init({ fruit }) {
   // TODO: move within getFileContent
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
@@ -32,7 +32,7 @@ export default async function init ({ fruit }) {
 
   return fruits
 
-  function fruitOne () {
+  function fruitOne() {
     let elfCalorieCounter = 0
     const mostCalories = { elf: null, elfCalories: null }
 
@@ -56,7 +56,7 @@ export default async function init ({ fruit }) {
     return mostCalories
   }
 
-  function fruitTwo () {
+  function fruitTwo() {
     let elfCalorieCounter = 0
     const elvesFoodCalories = []
 
@@ -74,7 +74,7 @@ export default async function init ({ fruit }) {
     const sorted = quicksort(elvesFoodCalories)
     return topThreeElves(sorted)
 
-    function topThreeElves (sorted) {
+    function topThreeElves(sorted) {
       let elfCounter = 1
       let elvesCalories = 0
       const topThreeMostCalories = {}
@@ -90,7 +90,7 @@ export default async function init ({ fruit }) {
       return topThreeMostCalories
     }
 
-    function quicksort (items) {
+    function quicksort(items) {
       if (items.length <= 1) {
         return items
       }

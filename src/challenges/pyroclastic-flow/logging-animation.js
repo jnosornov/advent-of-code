@@ -2,7 +2,7 @@ const grid1 = [[1, 1, 1], [0, 0, 0], [0, 0, 0]]
 const grid2 = [[0, 0, 0], [1, 1, 1], [0, 0, 0]]
 const grid3 = [[0, 0, 0], [0, 0, 0], [1, 1, 1]]
 
-function renderGrid (grid) {
+function renderGrid(grid) {
   let row = ""
   for (let i = 0; i < grid.length; i++) {
     for (let j = 0; j < grid[i].length; j++) {
@@ -16,7 +16,7 @@ function renderGrid (grid) {
 }
 
 let i = 0
-function renderBoard () {
+function renderBoard() {
   if (i === 0) {
     renderGrid(grid1)
   } else if (i === 1) {

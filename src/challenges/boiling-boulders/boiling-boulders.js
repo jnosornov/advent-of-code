@@ -2,7 +2,7 @@ import { getFileContent } from "../../helpers/file.js"
 import { run } from "../../helpers/general.js"
 import { DROPLET_SIDES } from "./constants.js"
 
-function setMap (droplets) {
+function setMap(droplets) {
   return droplets.reduce((accum, droplet) => {
     return {
       ...accum,
@@ -11,7 +11,7 @@ function setMap (droplets) {
   }, { area: droplets.length * DROPLET_SIDES })
 };
 
-function getLikelihoodDroplets (droplets) {
+function getLikelihoodDroplets(droplets) {
   return droplets.reduce((accum, droplet) => {
     return [
       ...accum,
@@ -21,7 +21,7 @@ function getLikelihoodDroplets (droplets) {
 };
 
 // TODO: simplify
-function nearByDroplets (droplet) {
+function nearByDroplets(droplet) {
   const dropletCoordinates = droplet.split(",")
 
   return dropletCoordinates.reduce((accum, coordinate, index, array) => {
@@ -50,7 +50,7 @@ function nearByDroplets (droplet) {
   }, [])
 };
 
-function getDropletsSurfaceArea (droplets) {
+function getDropletsSurfaceArea(droplets) {
   const map = setMap(droplets)
   const mightBeDroplet = getLikelihoodDroplets(droplets)
 
@@ -67,7 +67,7 @@ function getDropletsSurfaceArea (droplets) {
   return map.area
 }
 
-async function init (filename = "./input.txt") {
+async function init(filename = "./input.txt") {
   const opts = (entry) => entry.split("\n")
 
   const contents = await getFileContent({

@@ -4,7 +4,7 @@ import { collectFruits, logFruits, run } from "../../helpers/general.js"
 import { getFileContent } from "../../helpers/file.js"
 import { NEW_LINE } from "../../constants.js"
 
-export default async function init ({ fruit }) {
+export default async function init({ fruit }) {
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
   const contents = await getFileContent({
@@ -24,7 +24,7 @@ export default async function init ({ fruit }) {
 
   const { input: pairSectionIds } = contents
 
-  function fruitOne () {
+  function fruitOne() {
     let overlapingPairsCounter = 0
 
     for (let i = 0; i < pairSectionIds.length; i++) {
@@ -42,7 +42,7 @@ export default async function init ({ fruit }) {
     return overlapingPairsCounter
   }
 
-  function fruitTwo () {
+  function fruitTwo() {
     let overlapingPairsCounter = 0
 
     for (let i = 0; i < pairSectionIds.length; i++) {
