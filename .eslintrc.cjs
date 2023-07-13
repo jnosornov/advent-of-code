@@ -30,6 +30,9 @@ module.exports = {
       anonymous: "always",
       named: "never",
       asyncArrow: "always"
+    }],
+    "prefer-regex-literals": ["error", {
+      disallowRedundantWrapping: false
     }]
   }
 }
