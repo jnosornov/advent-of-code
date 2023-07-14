@@ -5,7 +5,7 @@ import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
 class RockPaperScissors {
-  constructor ({ rounds, scoring, useStrategy = false }) {
+  constructor({ rounds, scoring, useStrategy = false }) {
     this.score = 0
     this.rounds = rounds
     this.scoring = scoring
@@ -14,7 +14,7 @@ class RockPaperScissors {
     this.roundOutcome = { lose: "X", draw: "Y", win: "Z" }
   }
 
-  #mapToGameShape (value) {
+  #mapToGameShape(value) {
     const obj = {
       A: "rock",
       B: "paper",
@@ -27,7 +27,7 @@ class RockPaperScissors {
     return this.gameShapes[obj[value]]
   }
 
-  #mapStrategyToGameShape (round) {
+  #mapStrategyToGameShape(round) {
     const { elf: elfShape, me: strategy } = round
 
     if (strategy === this.roundOutcome.lose) {
@@ -63,7 +63,7 @@ class RockPaperScissors {
     }
   }
 
-  #mapRoundToGameShapes (round) {
+  #mapRoundToGameShapes(round) {
     if (this.useStrategy) {
       return Object
         .values(round)
@@ -103,7 +103,7 @@ class RockPaperScissors {
       }, {})
   }
 
-  #scoringRules (shapeValue, elfShapeValue) {
+  #scoringRules(shapeValue, elfShapeValue) {
     const draw = (shapeValue === elfShapeValue)
 
     const win =
@@ -125,7 +125,7 @@ class RockPaperScissors {
     }
   }
 
-  #computeRoundOutcome ({ round, index }) {
+  #computeRoundOutcome({ round, index }) {
     const { elf: elfShapeValue, me: shapeValue } = round
 
     const shapeKey = Object
@@ -148,7 +148,7 @@ class RockPaperScissors {
     }
   }
 
-  play () {
+  play() {
     for (let i = 0; i < this.rounds.length; i++) {
       const round = this.#mapRoundToGameShapes(this.rounds[i])
       this.#computeRoundOutcome({ round, index: i })
@@ -158,7 +158,7 @@ class RockPaperScissors {
   }
 }
 
-export default async function init ({ fruit }) {
+export default async function init({ fruit }) {
   // TODO: move within getFileContent
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
@@ -179,7 +179,7 @@ export default async function init ({ fruit }) {
 
   const { input: rounds } = contents
 
-  function fruitOne () {
+  function fruitOne() {
     const Tournament = new RockPaperScissors({
       rounds,
       scoring: {
@@ -201,7 +201,7 @@ export default async function init ({ fruit }) {
     }
   }
 
-  function fruitTwo () {
+  function fruitTwo() {
     const Tournament = new RockPaperScissors({
       rounds,
       scoring: {

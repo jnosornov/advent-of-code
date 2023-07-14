@@ -54,7 +54,7 @@ const select = {
       }
     })
 
-    function listener (c) {
+    function listener(c) {
       switch (c) {
         case "\r":
           return enter()
@@ -67,11 +67,11 @@ const select = {
       }
     }
 
-    function hideCursor () {
+    function hideCursor() {
       stdout.write("\x1B[?25l")
     }
 
-    function showCursor () {
+    function showCursor() {
       stdout.write("\x1B[?25h")
     }
   },

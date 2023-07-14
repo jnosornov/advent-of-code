@@ -1,6 +1,6 @@
 import { readFile, readdir } from "node:fs/promises"
 
-async function getFileContent ({ path, opts }) {
+async function getFileContent({ path, opts }) {
   try {
     const raw = await readFile(path, { encoding: "utf8" })
 
