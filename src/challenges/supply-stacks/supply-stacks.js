@@ -58,10 +58,21 @@ export default async function init({ fruit }) {
     return crateStacks
   }
 
+  function getTopCrates(stacks) {
+    let topCrates = ""
+    for (let i = 0; i <= stacks.length - 1; i++) {
+      const topElement = stacks[i].peek()
+      topCrates = `${topCrates}${topElement}`
+    }
+
+    return topCrates
+  }
+
   const { cratesIndex, stacksIndexes, instructionsIndex } = getIndexes(input)
-  const stacksOfCrates = fillCrateStacks({ input, startIndex: cratesIndex, stacksIndexes })
 
   function fruitOne() {
+    const stacksOfCrates = fillCrateStacks({ input, startIndex: cratesIndex, stacksIndexes })
+
     for (let i = instructionsIndex; i <= input.length - 1; i++) {
       const instruction = input[i]
       const [cratesToMove, from, to] = instruction.match(/\d+/g)
@@ -73,26 +84,47 @@ export default async function init({ fruit }) {
       }
     }
 
-    let topCrates = ""
-    for (let i = 0; i <= stacksOfCrates.length - 1; i++) {
-      const topElement = stacksOfCrates[i].peek()
-      topCrates = `${topCrates}${topElement}`
-    }
-
-    return topCrates
+    return getTopCrates(stacksOfCrates)
   }
 
-  const fruits = collectFruits({ fruit, callbacks: [fruitOne] })
-  const { fruit1 } = fruits
+  function fruitTwo() {
+    const stacksOfCrates = fillCrateStacks({ input, startIndex: cratesIndex, stacksIndexes })
+
+    for (let i = instructionsIndex; i <= input.length - 1; i++) {
+      let currentCratesToBeMoved
+      const instruction = input[i]
+      const [cratesToMove, from, to] = instruction.match(/\d+/g)
+
+      for (let j = 1; j <= cratesToMove; j++) {
+        const crate = stacksOfCrates[from - 1].peek()
+        stacksOfCrates[from - 1].pop()
+
+        currentCratesToBeMoved = `${crate}${currentCratesToBeMoved || ""}`
+      }
+
+      for (let k = 0; k <= currentCratesToBeMoved.length - 1; k++) {
+        const crate = currentCratesToBeMoved[k]
+        stacksOfCrates[to - 1].push(crate)
+      }
+    }
+
+    return getTopCrates(stacksOfCrates)
+  }
+
+  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
+  const { fruit1, fruit2 } = fruits
 
   logFruits({
     title: "Supply Stacks",
     fruitOne: {
       message: fruit1 ? `The crates ending at the top of each stack are ${fruit1}` : null
+    },
+    fruitTwo: {
+      message: fruit2 ? `The crates ending at the top of each stack are ${fruit2}` : null
     }
   })
 
   return fruits
 }
 
-run(() => init({ fruit: "1" }))
+run(() => init({ fruit: "both" }))
