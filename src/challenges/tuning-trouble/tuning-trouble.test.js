@@ -8,4 +8,11 @@ describe("Tuning Trouble", () => {
 
     equal(fruit1, test)
   })
+
+  it("matches characters processed before the first start-of-message marker is detected", async () => {
+    const test = 19
+    const { fruit2 } = await TuningTrouble({ fruit: "2" })
+
+    equal(fruit2, test)
+  })
 })
