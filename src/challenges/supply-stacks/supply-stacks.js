@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import { collectFruits, logFruits, run } from "../../helpers/general.js"
 import { getFileContent } from "../../helpers/file.js"
 import Stack from "../../structures/stack/stack.js"
@@ -117,10 +118,10 @@ export default async function init({ fruit }) {
   logFruits({
     title: "Supply Stacks",
     fruitOne: {
-      message: fruit1 ? `The crates ending at the top of each stack are ${fruit1}` : null
+      message: fruit1 ? `The crates ending at the top of each stack are ${chalk.yellow(fruit1)}` : null
     },
     fruitTwo: {
-      message: fruit2 ? `The crates ending at the top of each stack are ${fruit2}` : null
+      message: fruit2 ? `The crates ending at the top of each stack are ${chalk.yellow(fruit2)}` : null
     }
   })
 
