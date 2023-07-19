@@ -162,7 +162,7 @@ export default async function init({ fruit }) {
   // TODO: move within getFileContent
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
-  const contents = await getFileContent({
+  const { contents: rounds } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
       const n = entry.split(`${NEW_LINE}`)
@@ -176,8 +176,6 @@ export default async function init({ fruit }) {
       })
     }
   })
-
-  const { input: rounds } = contents
 
   function fruitOne() {
     const Tournament = new RockPaperScissors({

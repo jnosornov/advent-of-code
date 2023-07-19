@@ -8,10 +8,9 @@ async function getFileContent({ path, opts }) {
       throw Error("input file has no data")
     }
 
-    if (!opts) return raw
-    return { input: opts(raw) }
+    if (!opts) return { contents: raw }
+    return { contents: opts(raw) }
   } catch (error) {
-    console.log("did not found the folder")
     console.log(error)
     process.exit()
   }

@@ -8,7 +8,7 @@ export default async function init({ fruit }) {
   // TODO: move within getFileContent
   const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
 
-  const contents = await getFileContent({
+  const { contents: elvesFoodInventory } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
       const n = entry.split(`${NEW_LINE}${NEW_LINE}`)
@@ -16,7 +16,6 @@ export default async function init({ fruit }) {
     }
   })
 
-  const { input: elvesFoodInventory } = contents
   const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
   const { fruit1, fruit2 } = fruits
 
