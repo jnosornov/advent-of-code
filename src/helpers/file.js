@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises"
 
-async function getFileContent({ base, opts }) {
-  const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
+async function getFileContent({ base, opts, test = false }) {
+  const filename = (process.env.NODE_ENV === "test" || test) ? "./input.sample.txt" : "./input.txt"
   const path = new URL(filename, base)
 
   try {
