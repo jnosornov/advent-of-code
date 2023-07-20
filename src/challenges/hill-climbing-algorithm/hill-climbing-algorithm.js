@@ -259,7 +259,7 @@ function setHeighmap(puzzleInput) {
 
 (async function init() {
   const { contents } = await getFileContent({
-    path: new URL("./puzzle-input.txt", import.meta.url)
+    base: import.meta.url
   }).catch((error) => console.log(error))
 
   const puzzleInput = contents.split("\n")

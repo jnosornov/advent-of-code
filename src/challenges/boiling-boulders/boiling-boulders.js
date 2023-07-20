@@ -67,11 +67,11 @@ function getDropletsSurfaceArea(droplets) {
   return map.area
 }
 
-async function init(filename = "./input.txt") {
+async function init() {
   const opts = (entry) => entry.split("\n")
 
   const { contents: droplets } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+    base: import.meta.url,
     opts
   })
 

@@ -1,9 +1,11 @@
 import { readFile, readdir } from "node:fs/promises"
 
-async function getFileContent({ path, opts }) {
+async function getFileContent({ base, opts }) {
+  const filename = process.env.NODE_ENV === "test" ? "./input.sample.txt" : "./input.txt"
+  const path = new URL(filename, base)
+
   try {
     const raw = await readFile(path, { encoding: "utf8" })
-
     if (!raw.length) {
       throw Error("input file has no data")
     }
