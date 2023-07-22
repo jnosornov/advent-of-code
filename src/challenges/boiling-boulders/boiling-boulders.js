@@ -68,11 +68,13 @@ function getDropletsSurfaceArea(droplets) {
 }
 
 async function init() {
-  const opts = (entry) => entry.split("\n")
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
 
   const { contents: droplets } = await getFileContent({
-    base: import.meta.url,
-    opts
+    path: new URL(filename, import.meta.url),
+    opts: (entry) => entry.split("\n")
   })
 
   const surfaceArea = getDropletsSurfaceArea(droplets)

@@ -4,8 +4,12 @@ import { getFileContent } from "../../helpers/file.js"
 import { logFruits, collectFruits, run } from "../../helpers/general.js"
 
 export default async function init({ fruit }) {
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
+
   const { contents: datastream } = await getFileContent({
-    base: import.meta.url
+    path: new URL(filename, import.meta.url)
   })
 
   function fruitOne() {

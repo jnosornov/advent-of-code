@@ -1,20 +1,21 @@
 import { readFile, readdir } from "node:fs/promises"
 
-async function getFileContent({ base, opts, test = false }) {
-  const filename = (process.env.NODE_ENV === "test" || test) ? "./input.sample.txt" : "./input.txt"
-  const path = new URL(filename, base)
-
+async function getFileContent({ path, opts = null }) {
   try {
     const raw = await readFile(path, { encoding: "utf8" })
     if (!raw.length) {
-      throw Error("input file has no data")
+      throw Error("file is empty")
     }
 
     if (!opts) return { contents: raw }
     return { contents: opts(raw) }
   } catch (error) {
     console.log(error)
-    process.exit()
+
+    // be able to catch exception in test
+    if (process.env.NODE_ENV === "test") {
+      throw (error)
+    }
   }
 }
 

@@ -5,8 +5,12 @@ import { NEW_LINE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
 export default async function init({ fruit }) {
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
+
   const { contents: elvesFoodInventory } = await getFileContent({
-    base: import.meta.url,
+    path: new URL(filename, import.meta.url),
     opts: (entry) => {
       const n = entry.split(`${NEW_LINE}${NEW_LINE}`)
       return n.map(el => el.split(`${NEW_LINE}`))

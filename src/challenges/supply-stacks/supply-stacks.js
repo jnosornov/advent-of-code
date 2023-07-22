@@ -4,8 +4,12 @@ import { getFileContent } from "../../helpers/file.js"
 import Stack from "../../structures/stack/stack.js"
 
 export default async function init({ fruit }) {
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
+
   const { contents: input } = await getFileContent({
-    base: import.meta.url,
+    path: new URL(filename, import.meta.url),
     opts: (entry) => entry.split(/\r?\n/)
   })
 
