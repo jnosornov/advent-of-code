@@ -4,10 +4,10 @@
 
 # Advent of Code Challenges
 
-Current project solves advent of [code algorithms challenges](https://adventofcode.com/), the main goal is to practice algorithms and data structures. Apart from solving coding challenges the project also have integrates some tools to develop/run challenges smoothly, do static code analysis, and check for code vulnerabilities to ensure code quality. Below are the topics we are going to cover in the current documentation.
+Current project solves [advent of code challenges](https://adventofcode.com/), the main goal is to practice data structures and algorithms. Apart from solving coding challenges the project also has some tools integrated to be able to develop and run challenges smoothly, do static code analysis, and check for code vulnerabilities to ensure code quality. Below are the topics we are going to cover in the current documentation.
 
 - [testing](#testing)
-- [continuous integration and continuous deployment](#githbu-actions)
+- [continuous integration and continuous deployment](#github-actions)
 - [static code analysis](#static-code-analysis)
 - [scripts](#scripts)
 
@@ -15,33 +15,36 @@ Current project solves advent of [code algorithms challenges](https://adventofco
 
 #### **Testing**
 
-The project has [mocha](https://mochajs.org/) set up for testing the application, currently, there are only unit test, and even though mocha features are allowed to be use, the project uses [node built-in assert module](https://nodejs.org/api/assert.html) to test the code.
+The project has [mocha](https://mochajs.org/) set up to test the application, currently, there are only unit test, and even though mocha features are allowed to be use the project uses [node built-in assert module](https://nodejs.org/api/assert.html) to test the code.
 
-For checking test coverage the project uses [c8](https://github.com/bcoe/c8), it is used to generate the report that is later upload to [Codecov](https://about.codecov.io/).
+To check code coverage the project uses [c8](https://github.com/bcoe/c8), use to generate the coverage report which is later upload to [Codecov](https://about.codecov.io/).
 
-#### **Githbu Actions**
+#### **Github Actions**
 
-Continuous integrations and deployment is done by using github actions, the workflow currently have steps for the linter, the tests, check code vulnerabilities, report code coverage, and deploy the code. Checkout the [Github actions workflow](https://github.com/jnosornov/advent-of-code/blob/main/.github/workflows/pipeline.yml) for details.
+Continuous integration and deployment is done by using github actions, the workflow currently have steps for code linting, tests, check code vulnerabilities, report code coverage, and deploy the code. Checkout the [workflow](https://github.com/jnosornov/advent-of-code/blob/main/.github/workflows/pipeline.yml) for details.
 
-In order for some of the workflow steps to work there are some integrations done with github. For the security step, an integration was set with [Snyk](https://snyk.io/), for the coverage step, an integration was set with [Codecov](https://about.codecov.io/), and for the deploy step, and integration was set with [render](https://render.com/).
+Here are the github integrations done for some workflow steps to work.
+- to check secutiry vulnerabilities, an integration was set with [Snyk](https://snyk.io/).
+- to check code coverage, an integration was set with [Codecov](https://about.codecov.io/).
+- In order to host the application, and integration was set with [render](https://render.com/).
 
 
 #### **Static Code Analysis**
 
-The tools the project uses for code static analysis are [Snyk](https://snyk.io/) for checking code vulnerabilities, and [eslint](https://eslint.org/).
+The tools the project uses for static code analysis are [Snyk](https://snyk.io/), and [eslint](https://eslint.org/).
 
 #### **Scripts**
 
 `yarn lint` - checks for code linting warnings, and errors
 
-`yarn dev:server` - runs a server to expose the project API for development
+`yarn dev:server` - runs a server to expose the project API in development
 
-`yarn dev:challenges` - runs challenges for development
+`yarn dev:challenges` - runs challenges in development
 
-`yarn start` - runs a server to expose the project API for production
+`yarn start` - runs a server to expose the project API in production
 
-`yarn test` - runs mocha tests
+`yarn test` - runs unit tests
 
-`yarn test:watch` - runs mocha tests in watch mode
+`yarn test:watch` - runs unit tests in watch mode
 
 `yarn coverage` - checks tests coverage
