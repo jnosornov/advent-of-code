@@ -67,15 +67,16 @@ function getDropletsSurfaceArea(droplets) {
   return map.area
 }
 
-async function init(filename = "./input.txt") {
-  const opts = (entry) => entry.split("\n")
+async function init() {
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
 
-  const contents = await getFileContent({
+  const { contents: droplets } = await getFileContent({
     path: new URL(filename, import.meta.url),
-    opts
+    opts: (entry) => entry.split("\n")
   })
 
-  const { input: droplets } = contents
   const surfaceArea = getDropletsSurfaceArea(droplets)
 
   console.log(`⭐ scanned lava droplets surface area: ${surfaceArea}`)

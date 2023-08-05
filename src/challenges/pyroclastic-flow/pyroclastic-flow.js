@@ -227,14 +227,17 @@ class Rock {
 }
 
 (async function main() {
-  const contents = await getFileContent({
-    path: new URL("./puzzle-input.txt", import.meta.url)
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
+
+  const { contents } = await getFileContent({
+    path: new URL(filename, import.meta.url)
   }).catch((error) => console.log(error))
 
-  const puzzleInput = contents.toString()
   const simulation = new RockFallingSimulation({
     rocksToFall: 2022,
-    jetPattern: puzzleInput
+    jetPattern: contents
   })
 
   simulation.run()
