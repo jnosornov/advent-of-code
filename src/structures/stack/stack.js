@@ -24,6 +24,10 @@ class Stack {
   peek() {
     return this.elements[this.top]
   }
+
+  isEmpty() {
+    return this.top === 0
+  }
 }
 
 export default Stack
