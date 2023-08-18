@@ -7,6 +7,10 @@ class Node {
     this.parent = parent
     this.children = []
   }
+
+  setValue(value) {
+    this.value = value
+  }
 }
 
 class Tree {
@@ -15,7 +19,7 @@ class Tree {
   }
 
   add({ key, value, parentId }) {
-    const node = new Node({ key, value })
+    const node = new Node({ key, value, parentId })
 
     if (!this.root) {
       this.root = node
@@ -54,7 +58,7 @@ class Tree {
     return target
 
     function recursiveDepthTraverse(currentNode) {
-      for (let i = 0; i < currentNode.children[i].key; i++) {
+      for (let i = 0; i < currentNode.children.length; i++) {
         if (currentNode.children[i].key === key) {
           target = currentNode.children[i]
           break

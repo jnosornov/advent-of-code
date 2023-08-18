@@ -13,10 +13,10 @@ export default async function init({ fruit }) {
     opts: (entry) => entry.split(/\r?\n/)
   })
 
+  let route
   let filesystemTree
-  let directories
   let isListingDirectoryItems = false
-  let currentFolderItems = { directories: [], files: [] }
+  let currentDirectory = { parentId: null, directories: [], files: [], size: 0 }
 
   for (let i = 0; i < terminalOutput.length; i++) {
     const isChangeDirectoryCommand = (command) => /^\$ cd/.test(command)
@@ -30,16 +30,18 @@ export default async function init({ fruit }) {
       const isDirectory = /dir [a-z]+/.test(terminalOutput[i])
       const isFile = /[0-9]+ [.a-z]+/.test(terminalOutput[i])
 
+      currentDirectory.parentId = route.peek()
+
       if (isDirectory) {
         const directory = terminalOutput[i].match(/(?<=dir )([a-z]+)/)[0]
-        currentFolderItems.directories.push(directory)
+        currentDirectory.directories.push(directory)
       }
 
       if (isFile) {
         const size = terminalOutput[i].match(/[0-9]+/)[0]
         const name = terminalOutput[i].match(/[.a-z]+/)[0]
-
-        currentFolderItems.files.push({ name, size })
+        currentDirectory.files.push({ name, size })
+        currentDirectory.size = currentDirectory.size + parseInt(size)
       }
     }
 
@@ -47,28 +49,36 @@ export default async function init({ fruit }) {
       const directory = terminalOutput[i].match(/(?<=\$ cd )([/.a-z]+)/)[0]
 
       if (directory === "/") {
-        if (!directories) {
+        if (!route) {
           filesystemTree = new Tree()
           filesystemTree.add({ key: "/" })
         }
 
-        directories = new Stack()
+        route = new Stack()
       }
 
       if (directory === "..") {
-        directories.pop()
+        route.pop()
       } else {
-        directories.push(directory)
+        route.push(directory)
       }
     }
 
     if (isListingDirectoryItems && (!terminalOutput[i + 1] || isChangeDirectoryCommand(terminalOutput[i + 1]))) {
-      // add tree node with directories nodes and files as value
+      const { parentId, directories, files, size } = currentDirectory
+
+      const node = filesystemTree.find(parentId)
+      node.setValue({ size, files })
+      for (let i = 0; i < directories.length; i++) {
+        filesystemTree.add({ key: directories[i], parentId })
+      }
 
       isListingDirectoryItems = false
-      currentFolderItems = { directories: [], files: [] }
+      currentDirectory = { directories: [], files: [], size: 0 }
     }
   }
+
+  filesystemTree.prettify()
 }
 
 run(() => init({ fruit: "1" }))

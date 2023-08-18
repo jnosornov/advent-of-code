@@ -28,6 +28,10 @@ class Stack {
   isEmpty() {
     return this.top === 0
   }
+
+  getElements() {
+    return Object.values(this.elements)
+  }
 }
 
 export default Stack
