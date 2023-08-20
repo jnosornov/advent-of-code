@@ -16,7 +16,7 @@ export default async function init({ fruit }) {
   let route
   let filesystemTree
   let isListingDirectoryItems = false
-  let currentDirectory = { parentId: null, directories: [], files: [], size: 0 }
+  let currentDirectory = { parentId: null, directories: [], files: [], size: null }
 
   for (let i = 0; i < terminalOutput.length; i++) {
     const isChangeDirectoryCommand = (command) => /^\$ cd/.test(command)
@@ -41,7 +41,6 @@ export default async function init({ fruit }) {
         const size = terminalOutput[i].match(/[0-9]+/)[0]
         const name = terminalOutput[i].match(/[.a-z]+/)[0]
         currentDirectory.files.push({ name, size })
-        currentDirectory.size = currentDirectory.size + parseInt(size)
       }
     }
 
@@ -74,7 +73,7 @@ export default async function init({ fruit }) {
       }
 
       isListingDirectoryItems = false
-      currentDirectory = { directories: [], files: [], size: 0 }
+      currentDirectory = { directories: [], files: [], size: null }
     }
   }
 

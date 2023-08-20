@@ -1,4 +1,8 @@
+import chalk from "chalk"
+import numeral from "numeral"
+
 const LINE_JUMP = "\n"
+const EMPTY_STRING = ""
 
 class Node {
   constructor({ key, value = null, parent = null }) {
@@ -71,24 +75,39 @@ class Tree {
   }
 
   prettify() {
+    let tree = ""
+
     if (!this.root) {
       throw new Error("the tree is empty")
     }
 
+    const getIdentation = (times) => {
+      const EMPTY_SPACE = " "
+      return EMPTY_SPACE.repeat(times)
+    }
+
     const prettyPrintTree = ({ node = this.root, identation = 0 }) => {
-      let tree = ""
+      const isRootDirectory = node.key === this.root.key
+      const prefix = `${tree}${getIdentation(identation)}${isRootDirectory ? LINE_JUMP : ""}`
+      const dirsize = `${chalk.magenta(node.size || "null")}${LINE_JUMP}`
 
-      node.children.forEach((child) => {
-        const nodeIdentation = " ".repeat(identation)
-        const nodeLine = `● node key: ${child.key}`
+      const directory = `${isRootDirectory ? dirsize : `• ${node.key} ${dirsize}`}`
+      const files = node.value.files.reduce((accum, file) => {
+        const { name, size } = file
+        const prefix = `${accum}${isRootDirectory ? getIdentation(identation) : getIdentation(identation + 2)}`
+        return `${prefix}${name} ${chalk.yellow(numeral(size).format("0,0"))}${LINE_JUMP}`
+      }, EMPTY_STRING)
 
-        tree = `${tree}${LINE_JUMP}${nodeIdentation}${nodeLine}${prettyPrintTree({ node: child, identation: identation + 2 })}`
-      })
+      tree = `${prefix}${directory}${files}`
+
+      for (let i = 0; i < node.children.length; i++) {
+        prettyPrintTree({ node: node.children[i], identation: isRootDirectory ? 0 : identation + 2 })
+      }
 
       return tree
     }
 
-    return console.log(`● node key: ${this.root.key} ${prettyPrintTree({ node: this.root, identation: 2 })}`)
+    return console.log(`${prettyPrintTree({ node: this.root, identation: 0 })}`)
   }
 }
 
