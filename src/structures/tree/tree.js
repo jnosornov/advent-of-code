@@ -22,17 +22,12 @@ class Tree {
     this.root = null
   }
 
-  add({ key, value, parentId }) {
-    const node = new Node({ key, value, parentId })
+  add({ key, value, parent }) {
+    const node = new Node({ key, value })
 
     if (!this.root) {
       this.root = node
       return
-    }
-
-    const parent = this.find(parentId)
-    if (!parent) {
-      throw new Error(`node with given key ${parentId} has not been found`)
     }
 
     node.parent = parent

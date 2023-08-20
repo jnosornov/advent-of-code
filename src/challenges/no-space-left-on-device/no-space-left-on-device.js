@@ -66,10 +66,10 @@ export default async function init({ fruit }) {
     if (isListingDirectoryItems && (!terminalOutput[i + 1] || isChangeDirectoryCommand(terminalOutput[i + 1]))) {
       const { parentId, directories, files, size } = currentDirectory
 
-      const node = filesystemTree.find(parentId)
-      node.setValue({ size, files })
+      const parent = filesystemTree.find(parentId)
+      parent.setValue({ size, files })
       for (let i = 0; i < directories.length; i++) {
-        filesystemTree.add({ key: directories[i], parentId })
+        filesystemTree.add({ key: directories[i], parent })
       }
 
       isListingDirectoryItems = false
