@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import numeral from "numeral"
 import { run, logFruits, collectFruits } from "../../helpers/general.js"
-import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
+import { LINE_JUMP, EMPTY_SPACE } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
 class RockPaperScissors {
@@ -166,7 +166,7 @@ export default async function init({ fruit }) {
   const { contents: rounds } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
-      const n = entry.split(`${NEW_LINE}`)
+      const n = entry.split(`${LINE_JUMP}`)
       return n.map((el, index) => {
         const [elf, me] = el.split(`${EMPTY_SPACE}`)
 

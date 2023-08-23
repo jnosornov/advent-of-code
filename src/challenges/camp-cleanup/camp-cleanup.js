@@ -2,7 +2,7 @@ import chalk from "chalk"
 import numeral from "numeral"
 import { collectFruits, logFruits, run } from "../../helpers/general.js"
 import { getFileContent } from "../../helpers/file.js"
-import { NEW_LINE } from "../../constants.js"
+import { LINE_JUMP } from "../../constants.js"
 
 export default async function init({ fruit }) {
   const filename = process.env.NODE_ENV === "test"
@@ -12,7 +12,7 @@ export default async function init({ fruit }) {
   const { contents: pairSectionIds } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
-      const listSectionAssignments = entry.split(NEW_LINE)
+      const listSectionAssignments = entry.split(LINE_JUMP)
       return listSectionAssignments.map(pairSections => {
         const ids = pairSections.match(/[0-9]+/g).map(el => parseInt(el))
 

@@ -1,7 +1,7 @@
 import chalk from "chalk"
 import numeral from "numeral"
 import { run, collectFruits, logFruits } from "../../helpers/general.js"
-import { NEW_LINE } from "../../constants.js"
+import { LINE_JUMP } from "../../constants.js"
 import { getFileContent } from "../../helpers/file.js"
 
 export default async function init({ fruit }) {
@@ -12,8 +12,8 @@ export default async function init({ fruit }) {
   const { contents: elvesFoodInventory } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => {
-      const n = entry.split(`${NEW_LINE}${NEW_LINE}`)
-      return n.map(el => el.split(`${NEW_LINE}`))
+      const n = entry.split(`${LINE_JUMP}${LINE_JUMP}`)
+      return n.map(el => el.split(`${LINE_JUMP}`))
     }
   })
 

@@ -1,6 +1,6 @@
 import chalk from "chalk"
 import * as rdl from "node:readline"
-import { NEW_LINE, ITEM_POINTER } from "./constants.js"
+import { LINE_JUMP, ITEM_POINTER } from "./constants.js"
 
 const { stdin, stdout } = process
 
@@ -14,16 +14,16 @@ const select = {
     const selectedOptionIdx = 0
     let optionsInitialLocation = 0
 
-    stdout.write(NEW_LINE)
+    stdout.write(LINE_JUMP)
     stdout.write(chalk.bold("Choose the challenge to be executed"))
-    stdout.write(NEW_LINE)
-    stdout.write(NEW_LINE)
+    stdout.write(LINE_JUMP)
+    stdout.write(LINE_JUMP)
 
     const { rows } = await select.getCursorPosition()
     optionsInitialLocation = rows - 1
 
     for (let i = 0; i < options.length; i++) {
-      const item = `${ITEM_POINTER} ${options[i]}${NEW_LINE}`
+      const item = `${ITEM_POINTER} ${options[i]}${LINE_JUMP}`
 
       if (i === 0) {
         stdout.write(chalk.yellow(item))
@@ -85,7 +85,7 @@ const select = {
       stdin.setRawMode(false)
       stdin.pause()
       rdl.cursorTo(stdout, 0, optionsInitialLocation + options.length)
-      stdout.write(NEW_LINE)
+      stdout.write(LINE_JUMP)
 
       ChoseOptionEmitter.emit("event", selectedOption)
     }
@@ -95,7 +95,7 @@ const select = {
       stdin.setRawMode(false)
       stdin.pause()
 
-      stdout.write(NEW_LINE)
+      stdout.write(LINE_JUMP)
       showCursor()
     }
 
@@ -103,7 +103,7 @@ const select = {
       let item
 
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${LINE_JUMP}`
       stdout.write(item)
 
       if (selectedOptionIdx === 0) {
@@ -113,7 +113,7 @@ const select = {
       }
 
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${LINE_JUMP}`
       stdout.write(chalk.yellow(item))
     }
 
@@ -121,7 +121,7 @@ const select = {
       let item
 
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${LINE_JUMP}`
       stdout.write(item)
 
       if ((selectedOptionIdx + 1) === options.length) {
@@ -131,7 +131,7 @@ const select = {
       }
 
       rdl.cursorTo(stdout, 0, optionsInitialLocation + selectedOptionIdx)
-      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${NEW_LINE}`
+      item = `${ITEM_POINTER} ${options[selectedOptionIdx]}${LINE_JUMP}`
       stdout.write(chalk.yellow(item))
     }
 
