@@ -44,6 +44,39 @@ class FsTree extends Tree {
 
     return console.log(`${prettyPrintTree({ node: this.root, identation: 0 })}`)
   }
+
+  computeSize({ node = this.root, child = 0 }) {
+    console.log(node)
+    // if (!node) {
+    //   return
+    // }
+
+    // traverse to the left-most child
+    if (node.children.length > 0 && node.children[0].value.size === 0) {
+      console.log("hello")
+      return this.computeSize({ node: node.children[0] })
+    }
+
+    const dirsize = node
+      .value
+      .files
+      .reduce((accum, file) => {
+        return accum + file.size
+      }, 0) + node
+      .children
+      .reduce((accum, child) => {
+        return accum + child.value.size
+      }, 0)
+
+    node.size = dirsize
+    const nthChild = child + 1
+
+    if (nthChild <= node.parent.children.length) {
+      return this.computeSize({ node: node.parent[nthChild], child: nthChild })
+    }
+
+    return this.computeSize({ node: node.parent })
+  }
 }
 
 export default async function init({ fruit }) {
@@ -125,6 +158,9 @@ export default async function init({ fruit }) {
   }
 
   filesystemTree.prettify()
+  // filesystemTree.computeSize({ })
+  // filesystemTree.computeDirectorySize()
+  // filesystemTree.prettify()
 }
 
 run(() => init({ fruit: "1" }))
