@@ -14,7 +14,8 @@ export default async function init({ fruit }) {
   })
 
   const universe = []
-  const galaxies = new Map()
+  const galaxies = []
+  const galaxiesMap = new Map()
 
   // >> store using an adjacency list
   for (let row = 0; row <= grid.length - 1; row++) {
@@ -24,15 +25,25 @@ export default async function init({ fruit }) {
       const IS_GALAXY = grid[row][column] === "#"
 
       if (IS_GALAXY) {
-        galaxies.set(galaxies.size + 1, { x: row, y: column })
+        const galaxy = galaxiesMap.size + 1
+        galaxies.push(galaxy)
+        galaxiesMap.set(galaxy, { x: row, y: column })
       }
 
       universe.push({ x: row, y: column, neighbors: findNeighbors({ row, column, grid }) })
     }
   }
 
+  const galaxyPairs = getGalaxyPairs(galaxies)
+
   console.log("GALAXIES")
   console.log(galaxies)
+
+  console.log("GALAXY PAIRS")
+  console.log(galaxyPairs.length)
+
+  console.log("GALAXIES MAP")
+  console.log(galaxiesMap)
 
   console.log("UNIVERSE")
   console.log(universe)
@@ -75,6 +86,21 @@ const computeNeighborIdx = ({ row, column, grid }) => {
   const columns = column + 1
 
   return (rows * ROW_LENGTH) - (ROW_LENGTH - columns)
+}
+
+const getGalaxyPairs = (galaxies) => {
+  const pairs = []
+
+  for (let i = 0; i < galaxies.length - 1; i++) {
+    for (let j = i + 1; j < galaxies.length; j++) {
+      const galaxy = galaxies[i]
+      const galaxyPair = galaxies[j]
+
+      pairs.push([galaxy, galaxyPair])
+    }
+  }
+
+  return pairs
 }
 
 run(() => init({ fruit: "both" }))
