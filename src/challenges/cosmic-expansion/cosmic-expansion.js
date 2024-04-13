@@ -1,22 +1,23 @@
-import { run } from "../../helpers/general.js"
+import chalk from "chalk"
+import numeral from "numeral"
+import { collectFruits, logFruits, run } from "../../helpers/general.js"
 import { getFileContent } from "../../helpers/file.js"
 import { NEW_LINE } from "../../constants.js"
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: grid } = await getFileContent({
-    path: new URL(filename, import.meta.url),
-    opts: (entry) => entry.split(NEW_LINE)
-  })
-
+function cosmicExpansion({ grid, fruit }) {
+  let EXPANSION_UNIT
   let shortestPathTally = 0
   let rowExpansionCounter = 0
   let columnExpasionCounter = 0
 
-  const EXPANSION_UNIT = 1000000 - 1
+  if (fruit === "1") {
+    EXPANSION_UNIT = 1
+  }
+
+  if (fruit === "2") {
+    EXPANSION_UNIT = 1000000 - 1
+  }
+
   const galaxies = new Map()
   const rowCosmicExpansionStatus = []
   const columnCosmicExpansionStatus = []
@@ -77,7 +78,33 @@ export default async function init({ fruit }) {
     }
   }
 
-  console.log(shortestPathTally)
+  return shortestPathTally
+}
+
+export default async function init({ fruit }) {
+  const filename = process.env.NODE_ENV === "test"
+    ? "./input.sample.txt"
+    : "./input.txt"
+
+  const { contents: grid } = await getFileContent({
+    path: new URL(filename, import.meta.url),
+    opts: (entry) => entry.split(NEW_LINE)
+  })
+
+  const fruits = collectFruits({ fruit, callbacks: [() => cosmicExpansion({ grid, fruit: "1" }), () => cosmicExpansion({ grid, fruit: "2" })] })
+  const { fruit1, fruit2 } = fruits
+
+  logFruits({
+    title: "Cosmic Expansion",
+    fruitOne: {
+      message: fruit1 ? `The total shortest path length between galaxy pairs is ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
+    },
+    fruitTwo: {
+      message: fruit2 ? `The total shortest path length between galaxy pairs is ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
+    }
+  })
+
+  return fruits
 }
 
 run(() => init({ fruit: "both" }))
