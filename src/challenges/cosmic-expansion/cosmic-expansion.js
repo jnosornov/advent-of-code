@@ -3,104 +3,81 @@ import { getFileContent } from "../../helpers/file.js"
 import { NEW_LINE } from "../../constants.js"
 
 export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV !== "test"
+  const filename = process.env.NODE_ENV === "test"
     ? "./input.sample.txt"
     : "./input.txt"
 
-  // >> read from file
   const { contents: grid } = await getFileContent({
     path: new URL(filename, import.meta.url),
     opts: (entry) => entry.split(NEW_LINE)
   })
 
-  const universe = []
-  const galaxies = []
-  const galaxiesMap = new Map()
+  let shortestPathTally = 0
+  let rowExpansionCounter = 0
+  let columnExpasionCounter = 0
 
-  // >> store using an adjacency list
+  const EXPANSION_UNIT = 1
+  const galaxies = new Map()
+  const rowCosmicExpansionStatus = []
+  const columnCosmicExpansionStatus = []
+
   for (let row = 0; row <= grid.length - 1; row++) {
-    const ROW_LENGTH = grid[0].length
-
-    for (let column = 0; column <= ROW_LENGTH - 1; column++) {
+    for (let column = 0; column <= grid[0].length - 1; column++) {
       const IS_GALAXY = grid[row][column] === "#"
+      const IS_EMPTY_SPACE = grid[row][column] === "."
 
       if (IS_GALAXY) {
-        const galaxy = galaxiesMap.size + 1
-        galaxies.push(galaxy)
-        galaxiesMap.set(galaxy, { x: row, y: column })
+        rowCosmicExpansionStatus[row] = true
+        columnCosmicExpansionStatus[column] = true
       }
 
-      universe.push({ x: row, y: column, neighbors: findNeighbors({ row, column, grid }) })
+      if (IS_EMPTY_SPACE) {
+        if (!columnCosmicExpansionStatus[column]) {
+          columnCosmicExpansionStatus[column] = false
+        }
+
+        if (!rowCosmicExpansionStatus[row]) {
+          rowCosmicExpansionStatus[row] = false
+        }
+      }
     }
   }
 
-  const galaxyPairs = getGalaxyPairs(galaxies)
+  for (let row = 0; row <= grid.length - 1; row++) {
+    columnExpasionCounter = 0
 
-  console.log("GALAXIES")
-  console.log(galaxies)
+    if (!rowCosmicExpansionStatus[row]) {
+      rowExpansionCounter++
+    }
 
-  console.log("GALAXY PAIRS")
-  console.log(galaxyPairs.length)
+    for (let column = 0; column <= grid[0].length - 1; column++) {
+      const IS_GALAXY = grid[row][column] === "#"
 
-  console.log("GALAXIES MAP")
-  console.log(galaxiesMap)
+      if (!columnCosmicExpansionStatus[column]) {
+        columnExpasionCounter++
+      }
 
-  console.log("UNIVERSE")
-  console.log(universe)
-}
+      if (IS_GALAXY) {
+        const nGalaxy = galaxies.size + 1
+        const rowsToExpand = rowExpansionCounter * EXPANSION_UNIT
+        const columnsToExpand = columnExpasionCounter * EXPANSION_UNIT
 
-const findNeighbors = ({ row, column, grid }) => {
-  const neighbors = []
-
-  // west
-  if (grid[row][column - 1]) {
-    const neighborIdx = computeNeighborIdx({ row, column: column - 1, grid })
-    neighbors.push(neighborIdx)
-  }
-
-  // east
-  if (grid[row][column + 1]) {
-    const neighborIdx = computeNeighborIdx({ row, column: column + 1, grid })
-    neighbors.push(neighborIdx)
-  }
-
-  // north
-  if (grid[row - 1] && grid[row - 1][column]) {
-    const neighborIdx = computeNeighborIdx({ row: row - 1, column, grid })
-    neighbors.push(neighborIdx)
-  }
-
-  // south
-  if (grid[row + 1] && grid[row + 1][row]) {
-    const neighborIdx = computeNeighborIdx({ row: row + 1, column, grid })
-    neighbors.push(neighborIdx)
-  }
-
-  return neighbors
-}
-
-const computeNeighborIdx = ({ row, column, grid }) => {
-  const ROW_LENGTH = grid[0].length
-
-  const rows = row + 1
-  const columns = column + 1
-
-  return (rows * ROW_LENGTH) - (ROW_LENGTH - columns)
-}
-
-const getGalaxyPairs = (galaxies) => {
-  const pairs = []
-
-  for (let i = 0; i < galaxies.length - 1; i++) {
-    for (let j = i + 1; j < galaxies.length; j++) {
-      const galaxy = galaxies[i]
-      const galaxyPair = galaxies[j]
-
-      pairs.push([galaxy, galaxyPair])
+        galaxies.set(nGalaxy, { x: row + rowsToExpand, y: column + columnsToExpand })
+      }
     }
   }
 
-  return pairs
+  for (let i = 1; i <= galaxies.size; i++) {
+    for (let j = i + 1; j <= galaxies.size; j++) {
+      const galaxyA = galaxies.get(i)
+      const galaxyB = galaxies.get(j)
+
+      const galaxyPairTally = Math.abs(galaxyB.x - galaxyA.x) + Math.abs(galaxyB.y - galaxyA.y)
+      shortestPathTally = shortestPathTally + galaxyPairTally
+    }
+  }
+
+  console.log(shortestPathTally)
 }
 
 run(() => init({ fruit: "both" }))
