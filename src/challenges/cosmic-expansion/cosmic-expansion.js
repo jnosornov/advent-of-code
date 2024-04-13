@@ -16,7 +16,7 @@ export default async function init({ fruit }) {
   let rowExpansionCounter = 0
   let columnExpasionCounter = 0
 
-  const EXPANSION_UNIT = 1
+  const EXPANSION_UNIT = 1000000 - 1
   const galaxies = new Map()
   const rowCosmicExpansionStatus = []
   const columnCosmicExpansionStatus = []
