@@ -17,5 +17,5 @@ import select from "./select.js"
   const folders = await getDirectories(`${process.cwd()}/src/challenges`)
   const options = folders.map(folder => folder.replaceAll("-", " "))
 
-  select.init({ options, ChoseOptionEmitter })
+  select({ options, ChoseOptionEmitter }).init()
 })()
