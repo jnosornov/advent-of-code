@@ -13,7 +13,7 @@ import select from "./select.js"
     spawn(command, [`src/challenges/${id}/${id}.js`], { shell: true, stdio: "inherit" })
   })
 
-  // TODO: improve by track/catching
+  // TODO: improve by try/catching
   const folders = await getDirectories(`${process.cwd()}/src/challenges`)
   const options = folders.map(folder => folder.replaceAll("-", " "))
 
