@@ -3,7 +3,7 @@ import * as readline from "node:readline"
 import { stdin, stdout } from "node:process"
 import { ITEM_POINTER, NEW_LINE } from "./constants.js"
 
-function select({ options, ChoseOptionEmitter }) {
+function select({ options, ChooseOptionEmitter }) {
   let selectedOptionIdx
 
   async function keypressEventListener(str, key) {
@@ -32,7 +32,7 @@ function select({ options, ChoseOptionEmitter }) {
       stdout.write(NEW_LINE)
       stdout.write(NEW_LINE)
 
-      ChoseOptionEmitter.emit("event", selectedOption)
+      ChooseOptionEmitter.emit("event", selectedOption)
     }
 
     if (key.name === "up") {
