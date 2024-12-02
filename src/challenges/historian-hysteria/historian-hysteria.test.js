@@ -8,4 +8,11 @@ describe("Historian Hysteria", () => {
 
     equal(fruit1, totalDistance)
   })
+
+  it("matches the similarity score", async () => {
+    const similarityScore = 31
+    const { fruit2 } = await HistorianHysteria({ fruit: "2" })
+
+    equal(fruit2, similarityScore)
+  })
 })

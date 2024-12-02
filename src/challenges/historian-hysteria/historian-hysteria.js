@@ -27,13 +27,16 @@ export default async function init({ fruit }) {
     }
   })
 
-  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne({ ...lists })] })
-  const { fruit1 } = fruits
+  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne({ ...lists }), () => fruitTwo({ ...lists })] })
+  const { fruit1, fruit2 } = fruits
 
   logFruits({
     title: "Historian Hysteria",
     fruitOne: {
       message: fruit1 ? `the total distance between location lists is ${chalk.yellow(numeral(fruit1).format("0,0"))} units` : null
+    },
+    fruitTwo: {
+      message: fruit2 ? `the similarity score is ${chalk.yellow(numeral(fruit2).format("0,0"))} units` : null
     }
   })
 
@@ -56,4 +59,25 @@ function fruitOne({ firstGroupList, secondGroupList }) {
   return accum
 }
 
-run(() => init({ fruit: "1" }))
+function fruitTwo({ firstGroupList, secondGroupList }) {
+  const map = {}
+  let similarityScore = 0
+
+  firstGroupList.forEach((item) => {
+    map[item] = 0
+  })
+
+  secondGroupList.forEach((item) => {
+    if (map[item] !== undefined) {
+      map[item]++
+    }
+  })
+
+  firstGroupList.forEach((item) => {
+    similarityScore = similarityScore + item * map[item]
+  })
+
+  return similarityScore
+}
+
+run(() => init({ fruit: "both" }))
