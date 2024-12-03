@@ -36,8 +36,13 @@ function logFruits({ title, fruitOne, fruitTwo }) {
   console.log(chalk.bold(title))
   console.log("\r")
 
-  console.log(`${FRUIT_POINTER} ${fruitOne?.message}`)
-  console.log(`${FRUIT_POINTER} ${fruitTwo?.message}`)
+  if (fruitOne?.message) {
+    console.log(`${FRUIT_POINTER} ${fruitOne?.message}`)
+  }
+
+  if (fruitTwo?.message) {
+    console.log(`${FRUIT_POINTER} ${fruitTwo?.message}`)
+  }
 }
 
 export {
