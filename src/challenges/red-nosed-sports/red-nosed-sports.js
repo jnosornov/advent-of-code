@@ -5,7 +5,7 @@ import { getFileContent } from "../../helpers/file.js"
 import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
 
 export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV !== "test"
+  const filename = process.env.NODE_ENV === "test"
     ? "./input.sample.txt"
     : "./input.txt"
 
@@ -37,20 +37,8 @@ function fruitOne(reports) {
   let totalOfSafeReports = 0
 
   for (let i = 0; i <= reports.length - 1; i++) {
-    let areLevelsIncreasing
-    let isSafeReport = true
     const report = reports[i]
-
-    for (let j = 1; j <= report.length - 1; j++) {
-      const levelsDelta = parseInt(reports[i][j]) - parseInt(reports[i][j - 1])
-      const isWithinSafeLimits = Math.abs(levelsDelta) >= 1 && Math.abs(levelsDelta) <= 3 && levelsDelta !== 0
-      const isLevelsBehaviorTheSame = (areLevelsIncreasing === undefined || areLevelsIncreasing === (levelsDelta > 0))
-      areLevelsIncreasing = levelsDelta > 0
-
-      if (isWithinSafeLimits && isLevelsBehaviorTheSame) continue
-      isSafeReport = false
-      break
-    }
+    const isSafeReport = checkReportSafeness({ report })
 
     if (!isSafeReport) continue
     totalOfSafeReports++
@@ -63,30 +51,8 @@ function fruitTwo(reports) {
   let totalOfSafeReports = 0
 
   for (let i = 0; i <= reports.length - 1; i++) {
-    let areLevelsIncreasing
-    let isSafeReport = true
-    let totalOfUnsafeLevels = 0
     const report = reports[i]
-
-    for (let j = 1; j <= report.length - 1; j++) {
-      const levelsDelta = parseInt(reports[i][j]) - parseInt(reports[i][j - 1])
-      const isWithinSafeLimits = Math.abs(levelsDelta) >= 1 && Math.abs(levelsDelta) <= 3 && levelsDelta !== 0
-      const isLevelsBehaviorTheSame = (areLevelsIncreasing === undefined || areLevelsIncreasing === (levelsDelta > 0))
-      areLevelsIncreasing = levelsDelta > 0
-
-      if (isWithinSafeLimits && isLevelsBehaviorTheSame) continue
-
-      totalOfUnsafeLevels++
-      if (totalOfUnsafeLevels <= 1) continue
-
-      // TODO:
-      // if it has just 1 unsafe level remove it and test it again
-      isSafeReport = false
-      break
-    }
-
-    console.log(`report ${i + 1}`)
-    console.log(`number of unsafe levels ${totalOfUnsafeLevels}`)
+    const isSafeReport = checkReportSafeness({ report, tolerance: 1 })
 
     if (!isSafeReport) continue
     totalOfSafeReports++
@@ -95,4 +61,58 @@ function fruitTwo(reports) {
   return totalOfSafeReports
 }
 
-run(() => init({ fruit: "both" }))
+function checkReportSafeness({ report, tolerance = 0 }) {
+  let isSafeReport = true
+
+  const LOWER_SAFE_LIMIT = 1
+  const UPPER_SAFE_LIMIT = 3
+  let areLevelsIncreasing = null
+
+  for (let j = 0; j < report.length - 1; j++) {
+    const start = report[j]
+    const end = report[j + 1]
+    const delta = parseInt(end) - parseInt(start)
+
+    const isLevelsBehaviorTheSame = areLevelsIncreasing === null || areLevelsIncreasing === (delta > 0)
+    const isWithinSafeLimits = Math.abs(delta) >= LOWER_SAFE_LIMIT && Math.abs(delta) <= UPPER_SAFE_LIMIT && delta !== 0
+    areLevelsIncreasing = delta > 0
+
+    if (isWithinSafeLimits && isLevelsBehaviorTheSame) continue
+
+    if (tolerance !== 0) {
+      let isToleranceReportSafe = false
+      const toleranceReports = [
+        removeListItem({ list: report, index: j }),
+        removeListItem({ list: report, index: j + 1 })
+      ]
+
+      for (let k = 0; k <= toleranceReports.length - 1; k++) {
+        const isSafe = checkReportSafeness({ report: toleranceReports[k] })
+
+        if (!isSafe) continue
+        isToleranceReportSafe = true
+        break
+      }
+
+      if (isToleranceReportSafe) break
+    }
+
+    isSafeReport = false
+    break
+  }
+
+  return isSafeReport
+}
+
+function removeListItem({ list, index }) {
+  const updatedList = []
+
+  for (let i = 0; i <= list.length - 1; i++) {
+    if (i === index) continue
+    updatedList.push(list[i])
+  }
+
+  return updatedList
+}
+
+run(() => init({ fruit: "2" }))
