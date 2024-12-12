@@ -48,3 +48,9 @@ The tools the project uses for static code analysis are [Snyk](https://snyk.io/)
 `yarn test:watch` - runs unit tests in watch mode
 
 `yarn coverage` - checks tests coverage
+
+#### **Running a specific test**
+
+`yarn run test -g "Red-Nosed Sports"`
+
+`yarn run test:watch -g "Red-Nosed Sports"`
