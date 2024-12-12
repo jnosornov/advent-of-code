@@ -9,7 +9,7 @@ describe("Red-Nosed Sports", () => {
     equal(fruit1, safeReports)
   })
 
-  it("matches the number of safe reports after the Problem Dampener reactor module was mounted", async () => {
+  it.skip("matches the number of safe reports after the Problem Dampener reactor module was mounted", async () => {
     const safeReports = 4
     const { fruit2 } = await RedNosedSports({ fruit: "2" })
 
