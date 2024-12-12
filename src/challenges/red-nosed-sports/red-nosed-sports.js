@@ -47,7 +47,7 @@ function fruitOne(reports) {
   return totalOfSafeReports
 }
 
-function checkReportSafeness({ report, tolerance = 0 }) {
+export function checkReportSafeness({ report, tolerance = 0 }) {
   const areLevelsIncreasing = []
 
   for (let j = 0; j < report.length - 1; j++) {
