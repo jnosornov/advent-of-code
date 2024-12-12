@@ -48,60 +48,47 @@ function fruitOne(reports) {
 }
 
 function fruitTwo(reports) {
+  let unsafeReports = []
   let totalOfSafeReports = 0
 
   for (let i = 0; i <= reports.length - 1; i++) {
     const report = reports[i]
-    const isSafeReport = checkReportSafeness({ report, tolerance: 1 })
+    const { isSafeReport, totalOfUnsafeLevels, unsafeLevelsIdx } = checkReportSafeness({ report, tolerance: 1 })
 
-    if (!isSafeReport) continue
+    if (!isSafeReport) {
+      unsafeReports = [...unsafeReports, { i, report, totalOfUnsafeLevels, unsafeLevelsIdx }]
+      continue
+    }
+
     totalOfSafeReports++
   }
+
+  const total = unsafeReports.filter(item => item.totalOfUnsafeLevels === 1)
 
   return totalOfSafeReports
 }
 
 function checkReportSafeness({ report, tolerance = 0 }) {
-  let isSafeReport = true
-
-  const LOWER_SAFE_LIMIT = 1
-  const UPPER_SAFE_LIMIT = 3
-  let areLevelsIncreasing = null
+  const areLevelsIncreasing = []
 
   for (let j = 0; j < report.length - 1; j++) {
     const start = report[j]
     const end = report[j + 1]
     const delta = parseInt(end) - parseInt(start)
 
-    const isLevelsBehaviorTheSame = areLevelsIncreasing === null || areLevelsIncreasing === (delta > 0)
-    const isWithinSafeLimits = Math.abs(delta) >= LOWER_SAFE_LIMIT && Math.abs(delta) <= UPPER_SAFE_LIMIT && delta !== 0
-    areLevelsIncreasing = delta > 0
-
-    if (isWithinSafeLimits && isLevelsBehaviorTheSame) continue
-
-    if (tolerance !== 0) {
-      let isToleranceReportSafe = false
-      const toleranceReports = [
-        removeListItem({ list: report, index: j }),
-        removeListItem({ list: report, index: j + 1 })
-      ]
-
-      for (let k = 0; k <= toleranceReports.length - 1; k++) {
-        const isSafe = checkReportSafeness({ report: toleranceReports[k] })
-
-        if (!isSafe) continue
-        isToleranceReportSafe = true
-        break
-      }
-
-      if (isToleranceReportSafe) break
+    if (delta === 0) {
+      return false
     }
 
-    isSafeReport = false
-    break
+    areLevelsIncreasing.push(delta > 0)
+    const isWithinSafeLimits = Math.abs(delta) >= 1 && Math.abs(delta) <= 3
+    const isLevelsBehaviorTheSame = areLevelsIncreasing.length > 1 ? (areLevelsIncreasing[j] === areLevelsIncreasing[j - 1]) : true
+
+    if (isWithinSafeLimits & isLevelsBehaviorTheSame) continue
+    return false
   }
 
-  return isSafeReport
+  return true
 }
 
 function removeListItem({ list, index }) {
@@ -115,4 +102,4 @@ function removeListItem({ list, index }) {
   return updatedList
 }
 
-run(() => init({ fruit: "2" }))
+run(() => init({ fruit: "1" }))
