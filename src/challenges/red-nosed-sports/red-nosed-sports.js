@@ -47,27 +47,6 @@ function fruitOne(reports) {
   return totalOfSafeReports
 }
 
-function fruitTwo(reports) {
-  let unsafeReports = []
-  let totalOfSafeReports = 0
-
-  for (let i = 0; i <= reports.length - 1; i++) {
-    const report = reports[i]
-    const { isSafeReport, totalOfUnsafeLevels, unsafeLevelsIdx } = checkReportSafeness({ report, tolerance: 1 })
-
-    if (!isSafeReport) {
-      unsafeReports = [...unsafeReports, { i, report, totalOfUnsafeLevels, unsafeLevelsIdx }]
-      continue
-    }
-
-    totalOfSafeReports++
-  }
-
-  const total = unsafeReports.filter(item => item.totalOfUnsafeLevels === 1)
-
-  return totalOfSafeReports
-}
-
 function checkReportSafeness({ report, tolerance = 0 }) {
   const areLevelsIncreasing = []
 
@@ -89,17 +68,6 @@ function checkReportSafeness({ report, tolerance = 0 }) {
   }
 
   return true
-}
-
-function removeListItem({ list, index }) {
-  const updatedList = []
-
-  for (let i = 0; i <= list.length - 1; i++) {
-    if (i === index) continue
-    updatedList.push(list[i])
-  }
-
-  return updatedList
 }
 
 run(() => init({ fruit: "1" }))
