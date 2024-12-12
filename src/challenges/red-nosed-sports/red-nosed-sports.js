@@ -3,6 +3,7 @@ import numeral from "numeral"
 import { collectFruits, logFruits, run } from "../../helpers/general.js"
 import { getFileContent } from "../../helpers/file.js"
 import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
+import { removeListItem } from "../../helpers/tools.js"
 
 export default async function init({ fruit }) {
   const filename = process.env.NODE_ENV === "test"
@@ -47,6 +48,20 @@ function fruitOne(reports) {
   return totalOfSafeReports
 }
 
+function fruitTwo(reports) {
+  let totalOfSafeReports = 0
+
+  for (let i = 0; i <= reports.length - 1; i++) {
+    const report = reports[i]
+    const isSafeReport = checkReportSafeness({ report, tolerance: 1 })
+
+    if (!isSafeReport) continue
+    totalOfSafeReports++
+  }
+
+  return totalOfSafeReports
+}
+
 export function checkReportSafeness({ report, tolerance = 0 }) {
   const areLevelsIncreasing = []
 
@@ -55,19 +70,31 @@ export function checkReportSafeness({ report, tolerance = 0 }) {
     const end = report[j + 1]
     const delta = parseInt(end) - parseInt(start)
 
-    if (delta === 0) {
-      return false
-    }
-
     areLevelsIncreasing.push(delta > 0)
+    const areLevelsStable = delta === 0
     const isWithinSafeLimits = Math.abs(delta) >= 1 && Math.abs(delta) <= 3
-    const isLevelsBehaviorTheSame = areLevelsIncreasing.length > 1 ? (areLevelsIncreasing[j] === areLevelsIncreasing[j - 1]) : true
+    const isLevelsBehaviorTheSame = areLevelsIncreasing.length > 1 ? ((areLevelsIncreasing[j] === areLevelsIncreasing[j - 1]) && !areLevelsStable) : true
 
-    if (isWithinSafeLimits & isLevelsBehaviorTheSame) continue
-    return false
+    if (isWithinSafeLimits && isLevelsBehaviorTheSame) continue
+    if (tolerance === 0) return false
+
+    const indexesToRemove = j > 0 ? [j - 1, j, j + 1] : [j, j + 1]
+    return withReactorModule({ report, indexesToRemove, tolerance: tolerance - 1 })
   }
 
   return true
 }
 
-run(() => init({ fruit: "1" }))
+function withReactorModule({ report, indexesToRemove, tolerance }) {
+  const reports = indexesToRemove.map((levelIndex) => removeListItem({ list: report, index: levelIndex }))
+
+  for (let k = 0; k <= reports.length - 1; k++) {
+    const report = reports[k]
+    const isSafeReport = checkReportSafeness({ report, tolerance })
+    if (isSafeReport) return true
+  }
+
+  return false
+}
+
+run(() => init({ fruit: "both" }))
