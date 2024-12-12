@@ -1,6 +1,4 @@
-### Title
-
-Add a subject for the related issue.
+## Title
 
 ### Summary
 
