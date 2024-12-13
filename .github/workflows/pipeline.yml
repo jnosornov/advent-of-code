@@ -34,13 +34,11 @@ jobs:
         run: yarn coverage
         continue-on-error: true
       - name: upload coverage report
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-        continue-on-error: false
+        uses: codecov/codecov-action@v5
         with:
+          fail_ci_if_error: true
           flags: unittests
-
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   lint:
     runs-on: ubuntu-20.04
     steps:
