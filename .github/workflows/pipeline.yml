@@ -38,7 +38,8 @@ jobs:
         with:
           fail_ci_if_error: true
           flags: unittests
-          token: ${{ secrets.CODECOV_TOKEN }}
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   lint:
     runs-on: ubuntu-20.04
     steps:
