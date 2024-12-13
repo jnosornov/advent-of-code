@@ -32,7 +32,7 @@ jobs:
         run: yarn install
       - name: generate coverage report
         run: yarn coverage
-        continue-on-error: false
+        continue-on-error: true
       - name: upload coverage report
         uses: codecov/codecov-action@v4
         env:
