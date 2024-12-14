@@ -9,6 +9,13 @@ describe("Mull It Over", () => {
     equal(fruit1, uncorruptedOperationsResult)
   })
 
+  it("should match the result of the uncorrupted instructions with enable operations", async () => {
+    const uncorruptedOperationsResult = 48
+    const { fruit2 } = await MullItOver({ fruit: "2" })
+
+    equal(fruit2, uncorruptedOperationsResult)
+  })
+
   it("should not return an operand when memory is incorret", () => {
     const operand = getOperand({ memory: 2345, index: 0 })
     equal(operand, null)

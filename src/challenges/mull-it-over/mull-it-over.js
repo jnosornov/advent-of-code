@@ -13,13 +13,16 @@ export default async function init({ fruit }) {
     path: new URL(filename, import.meta.url)
   })
 
-  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne(corruptedMemory)] })
-  const { fruit1 } = fruits
+  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne(corruptedMemory), () => fruitTwo(corruptedMemory)] })
+  const { fruit1, fruit2 } = fruits
 
   logFruits({
     title: "Mull It Over",
     fruitOne: {
       message: fruit1 ? `the result of adding the uncorrupted instructions are ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
+    },
+    fruitTwo: {
+      message: fruit2 ? `the result of adding the uncorrupted instructions with enabled operations are ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
     }
   })
 
@@ -30,10 +33,56 @@ function fruitOne(memory) {
   return computeMemory(memory)
 }
 
+function fruitTwo(memory) {
+  return computeMemoryWithOperations(memory)
+}
+
 export function computeMemory(memory) {
   let result = 0
 
   for (let i = 0; i <= memory.length - 1; i++) {
+    const matchesStartOfOperation = `${memory[i]}${memory[i + 1]}${memory[i + 2]}${memory[i + 3]}` === "mul("
+    const multiplicand = getOperand({ memory, index: i + 4 })
+
+    if (multiplicand.length === 0) continue
+    const separatorIdx = i + 4 + multiplicand.length
+    const matchesOperandsSeparator = memory[separatorIdx] === ","
+
+    const multiplier = getOperand({ memory, index: separatorIdx + 1 })
+
+    if (multiplier.length === 0) continue
+    const endOfOperationIdx = separatorIdx + multiplier.length + 1
+    const matchesEndOfOperation = memory[endOfOperationIdx] === ")"
+
+    const isValidInstruction = matchesStartOfOperation && matchesOperandsSeparator && matchesEndOfOperation
+
+    if (!isValidInstruction) continue
+    result = result + (parseInt(multiplicand) * parseInt(multiplier))
+  }
+
+  return result
+}
+
+export function computeMemoryWithOperations(memory) {
+  let result = 0
+  let areInstructionsEnabled = true
+
+  for (let i = 0; i <= memory.length - 1; i++) {
+    const matchesEnableInstruction = `${memory[i]}${memory[i + 1]}${memory[i + 2]}${memory[i + 3]}` === "do()"
+    const matchesDisableInstruction = `${memory[i]}${memory[i + 1]}${memory[i + 2]}${memory[i + 3]}${memory[i + 4]}${memory[i + 5]}${memory[i + 6]}` === "don't()"
+
+    if (matchesEnableInstruction) {
+      areInstructionsEnabled = true
+      continue
+    }
+
+    if (matchesDisableInstruction) {
+      areInstructionsEnabled = false
+      continue
+    }
+
+    if (!areInstructionsEnabled) continue
+
     const matchesStartOfOperation = `${memory[i]}${memory[i + 1]}${memory[i + 2]}${memory[i + 3]}` === "mul("
     const multiplicand = getOperand({ memory, index: i + 4 })
 
@@ -74,4 +123,4 @@ export function getOperand({ memory, index, times = 3 }) {
   return operand
 }
 
-run(() => init({ fruit: "1" }))
+run(() => init({ fruit: "2" }))
