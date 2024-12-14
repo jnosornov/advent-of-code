@@ -8,3 +8,7 @@ export function removeListItem({ list, index }) {
 
   return updatedList
 }
+
+export function isNumeric(string) {
+  return !isNaN(parseInt(string))
+}
