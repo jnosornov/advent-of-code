@@ -5,7 +5,7 @@ import { getFileContent } from "../../helpers/file.js"
 import { isNumeric } from "../../helpers/tools.js"
 
 export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV !== "test"
+  const filename = process.env.NODE_ENV === "test"
     ? "./input.sample.txt"
     : "./input.txt"
 
