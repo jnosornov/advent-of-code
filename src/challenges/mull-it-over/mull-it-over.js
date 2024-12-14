@@ -56,16 +56,20 @@ export function computeMemory(memory) {
   return result
 }
 
-function getOperand({ memory, index }) {
+export function getOperand({ memory, index, times = 3 }) {
+  if (typeof memory !== "string") return null
+
+  let item = null
+  let counter = 0
   let operand = ""
-  const OPERAND_MAX_LENGTH = 3
 
-  for (let j = 0; j <= OPERAND_MAX_LENGTH - 1; j++) {
-    const item = memory[index + j]
+  do {
+    times = times - 1
+    item = memory[index + counter]
+    operand = isNumeric(item) ? `${operand}${item}` : operand
 
-    if (!isNumeric(item)) return operand
-    operand = `${operand}${item}`
-  }
+    counter++
+  } while (times > 0 && isNumeric(item))
 
   return operand
 }
