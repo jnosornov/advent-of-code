@@ -1,37 +1,20 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { collectFruits, logFruits, run } from "../../helpers/general.js"
-import { getFileContent } from "../../helpers/file.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { run, runChallenge } from "../../helpers/general.js"
 import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
 import { removeListItem } from "../../helpers/tools.js"
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: reports } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+export default async function init({ star }) {
+  return await runChallenge({
+    star,
+    challenge: "Red-Nosed Sports",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => {
       const lines = entry.split(NEW_LINE)
       return lines.map((item) => item.split(EMPTY_SPACE))
     }
   })
-
-  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne(reports), () => fruitTwo(reports)] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Red-Nosed Sports",
-    fruitOne: {
-      message: fruit1 ? `the total amount of safe reports are ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `the total amount of safe reports after the Problem Dampener module was mounted are ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
-    }
-  })
-
-  return fruits
 }
 
 function fruitOne(reports) {
@@ -97,4 +80,4 @@ function withReactorModule({ report, indexesToRemove, tolerance }) {
   return false
 }
 
-run(() => init({ fruit: "both" }))
+run(() => init({ star: "both" }))

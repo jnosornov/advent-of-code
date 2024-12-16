@@ -1,8 +1,7 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { run, logFruits, collectFruits } from "../../helpers/general.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { run, runChallenge } from "../../helpers/general.js"
 import { NEW_LINE, EMPTY_SPACE } from "../../constants.js"
-import { getFileContent } from "../../helpers/file.js"
 
 class RockPaperScissors {
   constructor({ rounds, scoring, useStrategy = false }) {
@@ -158,13 +157,53 @@ class RockPaperScissors {
   }
 }
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
+function fruitOne(rounds) {
+  const Tournament = new RockPaperScissors({
+    rounds,
+    scoring: {
+      shape: {
+        rock: 1,
+        paper: 2,
+        scissors: 3
+      },
+      roundOutcome: {
+        lost: 0,
+        draw: 3,
+        won: 6
+      }
+    }
+  })
 
-  const { contents: rounds } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+  return Tournament.play()
+}
+
+function fruitTwo(rounds) {
+  const Tournament = new RockPaperScissors({
+    rounds,
+    scoring: {
+      shape: {
+        rock: 1,
+        paper: 2,
+        scissors: 3
+      },
+      roundOutcome: {
+        lost: 0,
+        draw: 3,
+        won: 6
+      }
+    },
+    useStrategy: true
+  })
+
+  return Tournament.play()
+}
+
+export default async function init({ star }) {
+  return await runChallenge({
+    star,
+    challenge: "Red-Nosed Sports",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => {
       const n = entry.split(`${NEW_LINE}`)
       return n.map((el, index) => {
@@ -177,66 +216,6 @@ export default async function init({ fruit }) {
       })
     }
   })
-
-  function fruitOne() {
-    const Tournament = new RockPaperScissors({
-      rounds,
-      scoring: {
-        shape: {
-          rock: 1,
-          paper: 2,
-          scissors: 3
-        },
-        roundOutcome: {
-          lost: 0,
-          draw: 3,
-          won: 6
-        }
-      }
-    })
-
-    return {
-      gameScore: Tournament.play()
-    }
-  }
-
-  function fruitTwo() {
-    const Tournament = new RockPaperScissors({
-      rounds,
-      scoring: {
-        shape: {
-          rock: 1,
-          paper: 2,
-          scissors: 3
-        },
-        roundOutcome: {
-          lost: 0,
-          draw: 3,
-          won: 6
-        }
-      },
-      useStrategy: true
-    })
-
-    return {
-      gameScore: Tournament.play()
-    }
-  }
-
-  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Rock Paper Scissors",
-    fruitOne: {
-      message: fruit1 ? `after playing all the rounds the score is ${chalk.yellow(numeral(fruit1.gameScore).format("0,0"))} points` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `after playing all the rounds following the strategy guide the score is ${chalk.yellow(numeral(fruit2.gameScore).format("0,0"))} points` : null
-    }
-  })
-
-  return fruits
 }
 
-run(() => init({ fruit: "both" }))
+run(() => init({ star: "both" }))

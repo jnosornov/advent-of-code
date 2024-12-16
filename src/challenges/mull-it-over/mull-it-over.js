@@ -1,32 +1,15 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { collectFruits, logFruits, run } from "../../helpers/general.js"
-import { getFileContent } from "../../helpers/file.js"
+import path from "path"
+import { fileURLToPath } from "url"
 import { isNumeric } from "../../helpers/tools.js"
+import { runChallenge, run } from "../../helpers/general.js"
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: corruptedMemory } = await getFileContent({
-    path: new URL(filename, import.meta.url)
+export default async function init() {
+  return await runChallenge({
+    star: "both",
+    challenge: "Moll It Over",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url))
   })
-
-  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne(corruptedMemory), () => fruitTwo(corruptedMemory)] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Mull It Over",
-    fruitOne: {
-      message: fruit1 ? `the result of adding the uncorrupted instructions are ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `the result of adding the uncorrupted instructions with enabled operations are ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
-    }
-  })
-
-  return fruits
 }
 
 function fruitOne(memory) {
@@ -123,4 +106,4 @@ export function getOperand({ memory, index, times = 3 }) {
   return operand
 }
 
-run(() => init({ fruit: "2" }))
+run(() => init())

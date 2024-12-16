@@ -108,14 +108,14 @@ describe("Rucksack Reorganization", () => {
   describe("matches the rucksacks priority sum", () => {
     it("when the item type shared between compartments is found", async () => {
       const test = 157
-      const { fruit1 } = await RucksackReorganization({ fruit: "1" })
+      const [fruit1] = await RucksackReorganization({ star: "1" })
 
       equal(fruit1, test)
     })
 
     it("when the Elves group badge item type is found", async () => {
       const test = 70
-      const { fruit2 } = await RucksackReorganization({ fruit: "2" })
+      const [fruit2] = await RucksackReorganization({ star: "2" })
 
       equal(fruit2, test)
     })
