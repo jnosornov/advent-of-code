@@ -1,16 +1,14 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { collectFruits, logFruits, run } from "../../helpers/general.js"
-import { getFileContent } from "../../helpers/file.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { run, runChallenge } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: lists } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+export default async function init({ star }) {
+  return await runChallenge({
+    star,
+    challenge: "Historian Hysteria",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => {
       const lines = entry.split(NEW_LINE)
 
@@ -26,21 +24,6 @@ export default async function init({ fruit }) {
       return { firstGroupList, secondGroupList }
     }
   })
-
-  const fruits = collectFruits({ fruit, callbacks: [() => fruitOne({ ...lists }), () => fruitTwo({ ...lists })] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Historian Hysteria",
-    fruitOne: {
-      message: fruit1 ? `the total distance between location lists is ${chalk.yellow(numeral(fruit1).format("0,0"))} units` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `the similarity score is ${chalk.yellow(numeral(fruit2).format("0,0"))} units` : null
-    }
-  })
-
-  return fruits
 }
 
 function fruitOne({ firstGroupList, secondGroupList }) {
@@ -80,4 +63,4 @@ function fruitTwo({ firstGroupList, secondGroupList }) {
   return similarityScore
 }
 
-run(() => init({ fruit: "both" }))
+run(() => init({ star: "both" }))

@@ -4,14 +4,14 @@ import MullItOver, { getOperand } from "./mull-it-over.js"
 describe("Mull It Over", () => {
   it("should match the result of the uncorrupted instructions", async () => {
     const uncorruptedOperationsResult = 161
-    const { fruit1 } = await MullItOver({ fruit: "1" })
+    const [fruit1] = await MullItOver({ star: "1" })
 
     equal(fruit1, uncorruptedOperationsResult)
   })
 
   it("should match the result of the uncorrupted instructions with enable operations", async () => {
     const uncorruptedOperationsResult = 48
-    const { fruit2 } = await MullItOver({ fruit: "2" })
+    const [fruit2] = await MullItOver({ star: "2" })
 
     equal(fruit2, uncorruptedOperationsResult)
   })

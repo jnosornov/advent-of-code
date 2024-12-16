@@ -2,16 +2,16 @@ import { equal } from "assert"
 import RedNosedSports, { checkReportSafeness } from "./red-nosed-sports.js"
 
 describe("Red-Nosed Sports", () => {
-  it.skip("matches the number of safe reports", async () => {
+  it("matches the number of safe reports", async () => {
     const safeReports = 2
-    const { fruit1 } = await RedNosedSports({ fruit: "1" })
+    const [fruit1] = await RedNosedSports({ star: "1" })
 
     equal(fruit1, safeReports)
   })
 
-  it.skip("matches the number of safe reports after the Problem Dampener reactor module was mounted", async () => {
+  it("matches the number of safe reports after the Problem Dampener reactor module was mounted", async () => {
     const safeReports = 4
-    const { fruit2 } = await RedNosedSports({ fruit: "2" })
+    const [fruit2] = await RedNosedSports({ star: "2" })
 
     equal(fruit2, safeReports)
   })
