@@ -47,11 +47,13 @@ function logStars({ challenge = "", stars = [] }) {
   console.log("\r")
 
   if (first !== undefined) {
-    console.log(`${FRUIT_POINTER} 1: ${chalk.yellow(numeral(first).format("0,0"))}`)
+    const result = typeof (first) === "string" ? first : numeral(first).format("0,0")
+    console.log(`${FRUIT_POINTER} 1: ${chalk.yellow(result)}`)
   }
 
   if (second !== undefined) {
-    console.log(`${FRUIT_POINTER} 2: ${chalk.yellow(numeral(second).format("0,0"))}`)
+    const result = typeof (second) === "string" ? second : numeral(second).format("0,0")
+    console.log(`${FRUIT_POINTER} 2: ${chalk.yellow(result)}`)
   }
 
   console.log("\r")

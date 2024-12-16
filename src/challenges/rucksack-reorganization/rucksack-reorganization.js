@@ -1,7 +1,6 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { getFileContent } from "../../helpers/file.js"
-import { collectFruits, logFruits, run } from "../../helpers/general.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { run, runChallenge } from "../../helpers/general.js"
 
 const getRuckSackSharedItem = (rucksack) => {
   // maps rucksack first compartment item types
@@ -84,61 +83,45 @@ const getGroupBadge = (rucksacks) => {
   }
 }
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: rucksacks } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+export default async function init({ star }) {
+  return await runChallenge({
+    star,
+    challenge: "Rucksack Reorganization",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => entry.split("\n")
   })
-
-  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Rucksack Reorganization",
-    fruitOne: {
-      message: fruit1 ? `the comparments' shared item priority sum is ${chalk.yellow(numeral(fruit1).format("0,0"))}` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `the badges' priority sum is ${chalk.yellow(numeral(fruit2).format("0,0"))}` : null
-    }
-  })
-
-  return fruits
-
-  function fruitOne() {
-    let prioritySum = 0
-    for (let i = 0; i < rucksacks.length; i++) {
-      const rucksack = rucksacks[i]
-      const sharedItem = getRuckSackSharedItem(rucksack)
-
-      const arrangementPriority = getArrangementPriority(sharedItem)
-      prioritySum = prioritySum + arrangementPriority
-    }
-
-    return prioritySum
-  }
-
-  function fruitTwo() {
-    let prioritySum = 0
-    for (let i = 0; i < rucksacks.length; i++) {
-      const isElvesGroup = ((i + 1) % 3) === 0
-
-      if (!isElvesGroup) continue
-      const badge = getGroupBadge([rucksacks[i - 2], rucksacks[i - 1], rucksacks[i]])
-
-      const arrangementPriority = getArrangementPriority(badge)
-      prioritySum = prioritySum + arrangementPriority
-    }
-
-    return prioritySum
-  }
 }
 
-run(() => init({ fruit: "both" }))
+function fruitOne(rucksacks) {
+  let prioritySum = 0
+  for (let i = 0; i < rucksacks.length; i++) {
+    const rucksack = rucksacks[i]
+    const sharedItem = getRuckSackSharedItem(rucksack)
+
+    const arrangementPriority = getArrangementPriority(sharedItem)
+    prioritySum = prioritySum + arrangementPriority
+  }
+
+  return prioritySum
+}
+
+function fruitTwo(rucksacks) {
+  let prioritySum = 0
+  for (let i = 0; i < rucksacks.length; i++) {
+    const isElvesGroup = ((i + 1) % 3) === 0
+
+    if (!isElvesGroup) continue
+    const badge = getGroupBadge([rucksacks[i - 2], rucksacks[i - 1], rucksacks[i]])
+
+    const arrangementPriority = getArrangementPriority(badge)
+    prioritySum = prioritySum + arrangementPriority
+  }
+
+  return prioritySum
+}
+
+run(() => init({ star: "both" }))
 
 export {
   getRuckSackSharedItem,

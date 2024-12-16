@@ -7,7 +7,7 @@ import { removeListItem } from "../../helpers/tools.js"
 export default async function init({ star }) {
   return await runChallenge({
     star,
-    challenge: "Historian Hysteria",
+    challenge: "Red-Nosed Sports",
     solutions: [fruitOne, fruitTwo],
     directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => {
