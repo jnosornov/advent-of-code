@@ -54,3 +54,5 @@ The tools the project uses for static code analysis are [Snyk](https://snyk.io/)
 `yarn run test -g "Red-Nosed Sports"`
 
 `yarn run test:watch -g "Red-Nosed Sports"`
+
+ `NODE_ENV=test yarn mocha src/challenges/calorie-counting/calorie-counting.test.js --watch --parallel --require mocha-suppress-logs`

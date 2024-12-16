@@ -1,16 +1,14 @@
-import chalk from "chalk"
-import numeral from "numeral"
-import { collectFruits, logFruits, run } from "../../helpers/general.js"
-import { getFileContent } from "../../helpers/file.js"
+import path from "path"
+import { fileURLToPath } from "url"
+import { run, runChallenge } from "../../helpers/general.js"
 import { NEW_LINE } from "../../constants.js"
 
-export default async function init({ fruit }) {
-  const filename = process.env.NODE_ENV === "test"
-    ? "./input.sample.txt"
-    : "./input.txt"
-
-  const { contents: pairSectionIds } = await getFileContent({
-    path: new URL(filename, import.meta.url),
+export default async function init({ star }) {
+  return await runChallenge({
+    star,
+    challenge: "Camp Cleanup",
+    solutions: [fruitOne, fruitTwo],
+    directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (entry) => {
       const listSectionAssignments = entry.split(NEW_LINE)
       return listSectionAssignments.map(pairSections => {
@@ -23,55 +21,40 @@ export default async function init({ fruit }) {
       })
     }
   })
-
-  function fruitOne() {
-    let overlapingPairsCounter = 0
-
-    for (let i = 0; i < pairSectionIds.length; i++) {
-      const elfPair = pairSectionIds[i]
-      const [firstElf, secondElf] = elfPair
-
-      const sectionIdsOverlap =
-        (firstElf.lower >= secondElf.lower && firstElf.upper <= secondElf.upper) ||
-        (secondElf.lower >= firstElf.lower && secondElf.upper <= firstElf.upper)
-
-      if (!sectionIdsOverlap) continue
-      overlapingPairsCounter++
-    }
-
-    return overlapingPairsCounter
-  }
-
-  function fruitTwo() {
-    let overlapingPairsCounter = 0
-
-    for (let i = 0; i < pairSectionIds.length; i++) {
-      const elfPair = pairSectionIds[i]
-      const [firstElf, secondElf] = elfPair
-
-      const sectionIdsOverlap = firstElf.lower <= secondElf.upper && secondElf.lower <= firstElf.upper
-
-      if (!sectionIdsOverlap) continue
-      overlapingPairsCounter++
-    }
-
-    return overlapingPairsCounter
-  }
-
-  const fruits = collectFruits({ fruit, callbacks: [fruitOne, fruitTwo] })
-  const { fruit1, fruit2 } = fruits
-
-  logFruits({
-    title: "Camp Cleanup",
-    fruitOne: {
-      message: fruit1 ? `one range fully contains the other in ${chalk.yellow(numeral(fruit1).format("0,0"))} pair assigments` : null
-    },
-    fruitTwo: {
-      message: fruit2 ? `one range contains the other in ${chalk.yellow(numeral(fruit2).format("0,0"))} pair assignments` : null
-    }
-  })
-
-  return fruits
 }
 
-run(() => init({ fruit: "both" }))
+function fruitOne(pairSectionIds) {
+  let overlapingPairsCounter = 0
+
+  for (let i = 0; i < pairSectionIds.length; i++) {
+    const elfPair = pairSectionIds[i]
+    const [firstElf, secondElf] = elfPair
+
+    const sectionIdsOverlap =
+      (firstElf.lower >= secondElf.lower && firstElf.upper <= secondElf.upper) ||
+      (secondElf.lower >= firstElf.lower && secondElf.upper <= firstElf.upper)
+
+    if (!sectionIdsOverlap) continue
+    overlapingPairsCounter++
+  }
+
+  return overlapingPairsCounter
+}
+
+function fruitTwo(pairSectionIds) {
+  let overlapingPairsCounter = 0
+
+  for (let i = 0; i < pairSectionIds.length; i++) {
+    const elfPair = pairSectionIds[i]
+    const [firstElf, secondElf] = elfPair
+
+    const sectionIdsOverlap = firstElf.lower <= secondElf.upper && secondElf.lower <= firstElf.upper
+
+    if (!sectionIdsOverlap) continue
+    overlapingPairsCounter++
+  }
+
+  return overlapingPairsCounter
+}
+
+run(() => init({ star: "both" }))
