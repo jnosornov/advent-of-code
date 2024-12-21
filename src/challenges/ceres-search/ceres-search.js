@@ -16,65 +16,89 @@ export default async function init({ star }) {
 function starOne(puzzleInput) {
   let wordCounter = 0
   const WORD_TO_SEARCH = "XMAS"
+  const WORD_LENGTH = WORD_TO_SEARCH.length
 
-  for (let x = 0; x <= puzzleInput.length - 1; x++) {
-    const rowItem = puzzleInput[x]
-    for (let y = 0; y <= rowItem.length - 1; y) {
-      const letter = puzzleInput[x][y]
-      if (letter !== WORD_TO_SEARCH[0]) return
+  for (let row = 0; row <= puzzleInput.length - 1; row++) {
+    const rowItem = puzzleInput[row]
+    for (let column = 0; column <= rowItem.length - 1; ++column) {
+      const letter = puzzleInput[row][column]
+      if (letter !== WORD_TO_SEARCH[0]) continue
 
-      const neighbors = getNeighbors({ grid: puzzleInput, node: { x, y }, withOrdinalPoints: true })
-      wordCounter = wordCounter + (neighbors.filter((word) => word !== WORD_TO_SEARCH)?.length || 0)
+      // north
+      if (puzzleInput[row - (WORD_LENGTH - 1)] && puzzleInput[row - (WORD_LENGTH - 1)][column]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row - 1][column]}${puzzleInput[row - 2][column]}${puzzleInput[row - 3][column]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // south
+      if (puzzleInput[row + (WORD_LENGTH - 1)] && puzzleInput[row + (WORD_LENGTH - 1)][column]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row + 1][column]}${puzzleInput[row + 2][column]}${puzzleInput[row + 3][column]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // east
+      if (puzzleInput[row] && puzzleInput[row][column + (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row][column + 1]}${puzzleInput[row][column + 2]}${puzzleInput[row][column + 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // west
+      if (puzzleInput[row] && puzzleInput[row][column - (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row][column - 1]}${puzzleInput[row][column - 2]}${puzzleInput[row][column - 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // northeast
+      if (puzzleInput[row - (WORD_LENGTH - 1)] && puzzleInput[row - (WORD_LENGTH - 1)][column + (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row - 1][column + 1]}${puzzleInput[row - 2][column + 2]}${puzzleInput[row - 3][column + 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // northwest
+      if (puzzleInput[row - (WORD_LENGTH - 1)] && puzzleInput[row - (WORD_LENGTH - 1)][column - (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row - 1][column - 1]}${puzzleInput[row - 2][column - 2]}${puzzleInput[row - 3][column - 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // southeast
+      if (puzzleInput[row + (WORD_LENGTH - 1)] && puzzleInput[row + (WORD_LENGTH - 1)][column + (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row + 1][column + 1]}${puzzleInput[row + 2][column + 2]}${puzzleInput[row + 3][column + 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
+
+      // southwest
+      if (puzzleInput[row + (WORD_LENGTH - 1)] && puzzleInput[row + (WORD_LENGTH - 1)][column - (WORD_LENGTH - 1)]) {
+        const word = `${puzzleInput[row][column]}${puzzleInput[row + 1][column - 1]}${puzzleInput[row + 2][column - 2]}${puzzleInput[row + 3][column - 3]}`
+
+        if (word === WORD_TO_SEARCH) {
+          wordCounter++
+        }
+      }
     }
   }
-}
 
-function getNeighbors({ grid, node, withOrdinalPoints = false }) {
-  const neighbors = []
-  const { x, y } = node
-
-  // north
-  if (grid[x] && grid[x][y + 1]) {
-    neighbors.push(grid[x][y + 1])
-  }
-
-  // east
-  if (grid[x + 1] && grid[x + 1][y]) {
-    neighbors.push(grid[x + 1][y])
-  }
-
-  // south
-  if (grid[x] && grid[x][y - 1]) {
-    neighbors.push(grid[x][y + 1])
-  }
-
-  // west
-  if (grid[x - 1] && grid[x - 1][y]) {
-    neighbors.push(grid[x - 1][y])
-  }
-
-  if (withOrdinalPoints) {
-    // northeast
-    if (grid[x + 1] && grid[x + 1][y + 1]) {
-      neighbors.push(grid[x + 1][y + 1])
-    }
-
-    // southeast
-    if (grid[x + 1] && grid[x + 1][y - 1]) {
-      neighbors.push(grid[x + 1][y - 1])
-    }
-
-    // southwest
-    if (grid[x - 1] && grid[x - 1][y - 1]) {
-      neighbors.push(grid[x - 1][y - 1])
-    }
-
-    if (grid[x - 1] && grid[x - 1][y + 1]) {
-      neighbors.push(grid[x - 1][y + 1])
-    }
-  }
-
-  return neighbors
+  return wordCounter
 }
 
 run(() => init({ star: "1" }))
