@@ -7,7 +7,7 @@ export default async function init({ star }) {
   return await runChallenge({
     star,
     challenge: "Ceres Search",
-    solutions: [starOne],
+    solutions: [starOne, starTwo],
     directory: path.dirname(fileURLToPath(import.meta.url)),
     opts: (puzzleInput) => splitByEndOfLine(puzzleInput)
   })
@@ -101,4 +101,31 @@ function starOne(puzzleInput) {
   return wordCounter
 }
 
-run(() => init({ star: "1" }))
+function starTwo(puzzleInput) {
+  let wordCounter = 0
+  const WORD_TO_SEARCH = "MAS"
+  const REVERSED_WORD_TO_SEARCH = "SAM"
+
+  for (let row = 0; row <= puzzleInput.length - 1; row++) {
+    const rowItem = puzzleInput[row]
+    for (let column = 0; column <= rowItem.length - 1; ++column) {
+      const letter = puzzleInput[row][column]
+      if (letter !== WORD_TO_SEARCH[1]) continue
+
+      const isWithinRowLimits = row > 0 && row < puzzleInput.length - 1
+      const isWithinColumnLimits = column > 0 && column < rowItem.length - 1
+      if (!isWithinRowLimits || !isWithinColumnLimits) continue
+
+      const firstWord = `${puzzleInput[row - 1][column - 1]}${puzzleInput[row][column]}${puzzleInput[row + 1][column + 1]}`
+      const secondWord = `${puzzleInput[row + 1][column - 1]}${puzzleInput[row][column]}${puzzleInput[row - 1][column + 1]}`
+      const isXMAS = (firstWord === WORD_TO_SEARCH || firstWord === REVERSED_WORD_TO_SEARCH) && (secondWord === WORD_TO_SEARCH || secondWord === REVERSED_WORD_TO_SEARCH)
+
+      if (!isXMAS) continue
+      wordCounter++
+    }
+  }
+
+  return wordCounter
+}
+
+run(() => init({ star: "both" }))

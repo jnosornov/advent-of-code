@@ -8,4 +8,11 @@ describe("Ceres Search", () => {
 
     equal(fruit1, test)
   })
+
+  it("mathes the number of MAS in the X form found", async () => {
+    const test = 9
+    const [fruit2] = await CeresSearch({ star: "2" })
+
+    equal(fruit2, test)
+  })
 })
