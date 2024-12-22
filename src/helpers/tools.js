@@ -1,3 +1,5 @@
+import { NEW_LINE } from "../constants.js"
+
 export function removeListItem({ list, index }) {
   const updatedList = []
 
@@ -11,4 +13,8 @@ export function removeListItem({ list, index }) {
 
 export function isNumeric(string) {
   return !isNaN(parseInt(string))
+}
+
+export function splitByEndOfLine(input) {
+  return input.split(NEW_LINE)
 }
