@@ -12,11 +12,12 @@
     "dev:challenges": "node src/index.js",
     "start": "node src/server.js",
     "test": "NODE_ENV=test mocha \"./src/**/*.test.js\" --require mocha-suppress-logs",
-    "test:watch": "yarn test --watch --parallel",
+    "test:watch": "pnpm test --watch --parallel",
     "coverage": "NODE_ENV=test c8 mocha \"./src/**/*.test.js\" --require mocha-suppress-logs"
   },
   "author": "Johnathan Osorno Valencia",
   "license": "ISC",
+  "packageManager": "pnpm@10.6.1",
   "devDependencies": {
     "c8": "^8.0.0",
     "eslint": "^8.0.1",
