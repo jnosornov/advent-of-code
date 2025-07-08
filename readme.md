@@ -35,24 +35,24 @@ The tools the project uses for static code analysis are [Snyk](https://snyk.io/)
 
 #### **Scripts**
 
-`yarn lint` - checks for code linting warnings, and errors
+`pnpm lint` - checks for code linting warnings, and errors
 
-`yarn dev:server` - runs a server to expose the project API in development
+`pnpm dev:server` - runs a server to expose the project API in development
 
-`yarn dev:challenges` - runs challenges in development
+`pnpm dev:challenges` - runs challenges in development
 
-`yarn start` - runs a server to expose the project API in production
+`pnpm start` - runs a server to expose the project API in production
 
-`yarn test` - runs unit tests
+`pnpm test` - runs unit tests
 
-`yarn test:watch` - runs unit tests in watch mode
+`pnpm test:watch` - runs unit tests in watch mode
 
-`yarn coverage` - checks tests coverage
+`pnpm coverage` - checks tests coverage
 
 #### **Running a specific test**
 
-`yarn run test -g "Red-Nosed Sports"`
+`pnpm run test -g "Red-Nosed Sports"`
 
-`yarn run test:watch -g "Red-Nosed Sports"`
+`pnpm run test:watch -g "Red-Nosed Sports"`
 
- `NODE_ENV=test yarn mocha src/challenges/calorie-counting/calorie-counting.test.js --watch --parallel --require mocha-suppress-logs`
+ `NODE_ENV=test pnpm mocha src/challenges/calorie-counting/calorie-counting.test.js --watch --parallel --require mocha-suppress-logs`
